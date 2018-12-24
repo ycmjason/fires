@@ -34,7 +34,7 @@ Conceptually, retriving a document from a collection should be as simple as `Col
 ```js
 const db = firecracker();
 const collection = db.collection('cities');
-const document = collection.findById('LA');
+const document = await collection.findById('LA');
 /* {
  *     name: "Los Angeles",
  *     state: "CA",
