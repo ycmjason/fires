@@ -1,4 +1,4 @@
-import $firestore from './$firestore';
+import firebase from 'firebase';
 import { aMapValues } from './utils';
 
 export default class FirecrackerDocument {
@@ -10,11 +10,11 @@ export default class FirecrackerDocument {
   }
 
   static async from ($obj) {
-    if ($obj instanceof $firestore.DocumentReference) {
+    if ($obj instanceof firebase.firestore.DocumentReference) {
       return await transformDocumentRef($obj);
     }
 
-    if ($obj instanceof $firestore.DocumentSnapshot) {
+    if ($obj instanceof firebase.firestore.DocumentSnapshot) {
       return await transformDocumentSnapshot($obj);
     }
 
@@ -62,11 +62,11 @@ const transformDocumentSnapshot = async $snapshot => {
 
 const transformDocumentData = async $docData => {
   const transformValue = async v => {
-    if (v instanceof $firestore.DocumentReference) {
+    if (v instanceof firebase.firestore.DocumentReference) {
       return await transformDocumentRef(v);
     }
 
-    if (v instanceof $firestore.Timestamp) {
+    if (v instanceof firebase.firestore.Timestamp) {
       return v.toDate();
     }
 

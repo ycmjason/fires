@@ -1,15 +1,24 @@
-import Firecracker from '../Firecracker';
-import * as admin from 'firebase-admin';
-
-import serviceAccount from '../../firebaseServiceAccountKey.json';
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: 'https://firecracker-test-17604.firebaseio.com',
-});
+jest.mock('../FirecrackerCollection');
+import { firestore } from './helpers/firebase';
+import { Firecracker, FirecrackerCollection } from '..';
 
 describe('Firecracker', () => {
-  it('should be defined', () => {
-    expect(Firecracker).toBeDefined();
+  describe('new Firecracker(firestore)', () => {
+    it('should point this.$firestore to the correct firestore', () => {
+      const firecracker = new Firecracker(firestore);
+      expect(firecracker.$firestore).toBe(firestore);
+    });
+  });
+
+  describe('firecracker.collection(name)', () => {
+    it('should return a FirecrackerCollection', () => {
+      const firecracker = new Firecracker(firestore);
+
+      expect(firecracker.collection('test'))
+        .toBeInstanceOf(FirecrackerCollection);
+
+      expect(FirecrackerCollection)
+        .toHaveBeenCalledWith(firestore.collection('test'));
+    });
   });
 });

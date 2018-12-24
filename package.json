@@ -20,7 +20,6 @@
     "dotenv": "^6.2.0",
     "eslint": "^5.11.0",
     "firebase": "^5.7.1",
-    "firebase-admin": "^6.4.0",
     "jest": "^23.6.0"
   },
   "dependencies": {

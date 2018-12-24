@@ -6,4 +6,5 @@ dist
 .cache
 node_modules
 npm-debug.log*
-firebaseServiceAccountKey.json
+.env.local
+.env.*.local
