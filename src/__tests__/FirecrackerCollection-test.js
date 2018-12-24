@@ -7,6 +7,7 @@ describe('FirecrackerCollection', () => {
 
   beforeAll(async () => {
     await $collection.doc('a').set({ value: 30 });
+    console.log('hi');
   });
 
   describe('new FirecrackerCollection($collection)', () => {
