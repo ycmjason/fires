@@ -6,7 +6,7 @@ describe('FirecrackerCollection', () => {
   const $collection = firestore.collection('test');
 
   beforeAll(async () => {
-    // await $collection.doc('a').set({ value: 30 });
+    await $collection.doc('a').set({ value: 30 });
   });
 
   describe('new FirecrackerCollection($collection)', () => {
