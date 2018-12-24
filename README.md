@@ -27,6 +27,9 @@ userCollection.find({
   country: 'us', // equivilant to ['==', 'us']
   age: ['range[)', 21, 30], // denotes 21 <= age < 30
   friends: ['array-contains', firecrackerDocument],
+  thirdParty: { // nested query is supported, you can also speify 'thirdParty.facebook' if you wish
+    facebook: true, // equivilant to ['==', true]
+  },
 });
 ```
 
