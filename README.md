@@ -12,8 +12,8 @@ For example, let's take a look at the following code for retrieving a single doc
 const collectionReference = db.collection('cities');
 const documentReference = collectionReference.doc('LA');
 const documentSnapshot = await documentReference.get();
-const document = documentSnapshot.data();
-/* after 4 transformation, we finally get our data!
+const documentData = documentSnapshot.data();
+/* after 4 operations, we finally get our data!
  *   {
  *     name: "Los Angeles",
  *     state: "CA",
@@ -22,7 +22,11 @@ const document = documentSnapshot.data();
  */
 ```
 
-Firestore API is highly flexible; it takes care of all use case of Firestore. However, the flexibility comes at the cost of developer experience. Especially if you are only interested in the data itself.
+As illustrated above, just to retrieve a single document, we have to perform 4 operations: `CollectionReference > DocumentReference > DocumentSnapshot > DocumentData`.
+
+Firestore API is highly flexible; it takes care of many use cases of Firestore, allowing developers to optimise the communications between their application and the database.
+
+However, this flexibility comes at a cost of developer experience (because there are extra unintuitive steps involved). Especially if you are only interested in the data itself.
 
 Firecracker exposes a very simple API (merely 3 classes); allowing developers to focus on the data.
 
