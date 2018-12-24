@@ -10,19 +10,17 @@ firebase.initializeApp({
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
 });
 
-export default firebase;
 
 const firestore = firebase.firestore();
 firestore.settings({ timestampsInSnapshots: true });
-export { firestore };
 
-export const clearCollection = async collection => {
+const clearCollection = async collection => {
   await Promise.all(
     (await collection.get()).docs
       .map(({ ref }) => ref)
-      .map(async ref => {
-        console.log(ref);
-        await ref.delete()
-      })
+      .map(async ref => await ref.delete())
   );
 };
+
+export default firebase;
+export { firestore, clearCollection };

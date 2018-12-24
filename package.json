@@ -4,7 +4,7 @@
   "description": "Firestore simplified.",
   "main": "src/index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "Jason Yu <jason.yu@thehutgroup.com>",
