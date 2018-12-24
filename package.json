@@ -1,19 +1,27 @@
 {
   "name": "@ycm.jason/firecracker",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "Firestore simplified.",
+  "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [],
   "author": "Jason Yu <jason.yu@thehutgroup.com>",
   "license": "ISC",
-  "dependencies": {
-    "firebase": "*"
+  "peerDependencies": {
+    "firebase": "^5.7.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.2.2",
     "@ycm.jason/eslint-config": "^1.3.1",
-    "eslint": "^5.11.0"
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "eslint": "^5.11.0",
+    "firebase": "^5.7.1",
+    "jest": "^23.6.0"
+  },
+  "dependencies": {
+    "@babel/preset-env": "^7.2.3"
   }
 }
