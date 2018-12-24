@@ -12,7 +12,6 @@ describe('Firecracker', () => {
 
   describe('firecracker.collection(name)', () => {
     it('should return a FirecrackerCollection', () => {
-      /*
       const firecracker = new Firecracker(firestore);
 
       expect(firecracker.collection('test'))
@@ -20,7 +19,6 @@ describe('Firecracker', () => {
 
       expect(FirecrackerCollection)
         .toHaveBeenCalledWith(firestore.collection('test'));
-        */
     });
   });
 });
