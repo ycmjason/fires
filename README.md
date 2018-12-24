@@ -1,5 +1,7 @@
 # Firecracker
 
+[![Build Status](https://travis-ci.com/ycmjason/firecracker.svg?branch=master)](https://travis-ci.com/ycmjason/firecracker)
+
 Firestore simplified.
 
 ## Why?
