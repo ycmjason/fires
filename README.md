@@ -4,7 +4,27 @@ Firestore simplified.
 
 ## Why?
 
-Firestore is powerful and robust. However the official API seems a little bit too complicated. So I created this to expose limited functionality of Firestore which might hopefully make it easier to use.
+Firestore is powerful and robust with high level of flexibility. However, I personally find the official API overly-complicated for simple operations.
+
+For example, let's take a look at the following code for retrieving a single document.
+
+```js
+const collectionReference = db.collection('cities');
+const documentReference = collectionReference.doc('LA');
+const documentSnapshot = await documentReference.get();
+const document = documentSnapshot.data();
+/* after 4 transformation, we finally get our data!
+ *   {
+ *     name: "Los Angeles",
+ *     state: "CA",
+ *     country: "USA"
+ *   }
+ */
+```
+
+Firestore API is highly flexible; it takes care of all use case of Firestore. However, the flexibility comes at the cost of developer experience. Especially if you are only interested in the data itself.
+
+Firecracker exposes a very simple API (merely 3 classes); allowing developers to focus on the data.
 
 ## Install
 
