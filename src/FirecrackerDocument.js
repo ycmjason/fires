@@ -20,6 +20,29 @@ export default class FirecrackerDocument {
 
     throw Error(`Firecracker.from panic: Unsure how to resolve ${$obj}.`);
   }
+
+  // Update
+  async update (data) {
+    this.$ref.update(data);
+  }
+
+  // SUBSCRIBE
+  async subscribe (fn) {
+    return this.$ref.onSnapshot(async $documentSnapshot => {
+      const doc = await FirecrackerDocument.from($documentSnapshot);
+      return fn(doc);
+    });
+  }
+
+  async subscribeIncludingMetadata (fn) {
+    return this.$ref.onSnapshot(
+      { includeMetadataChanges: true },
+      async $documentSnapshot => {
+        const doc = await FirecrackerDocument.from($documentSnapshot);
+        return fn(doc, $documentSnapshot.metadata);
+      },
+    );
+  }
 }
 
 const transformDocumentRef = async $docRef => {
