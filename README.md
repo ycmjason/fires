@@ -37,15 +37,9 @@ Each entry of the `queryObj` contains a key and value pair of `field` and `query
 
 Multiple entries will be treated as logical `AND`. 
 
-You can use the firestore operators that you can use in [firestore queries](https://firebase.google.com/docs/firestore/query-data/queries).
-- `<`
-- `<=`
-- `==`
-- `>`
-- `>=`
-- `array-contains`
+You can use the operators which you can use in [firestore queries](https://firebase.google.com/docs/firestore/query-data/queries), i.e. `<`, `<=`, `==`, `>`, `>=`, `array-contains`.
 
-A few extra `range` operators are also available:
+There is an extra `range` operator added in Firecracker:
 - `range[]` - inclusive range, e.g. `age: ['range[]', 20, 50]` denotes `20 <= age <= 50`
 - `range()` - exclusive range, e.g. `state: ['range()', 'CA', 'IN']` denotes `'CA' < state < 'IN'`
 - `range[)` or `range(]` - mixing both inclusive and exclusive brackets, e.g. `year: ['range[)', 1995, 2018]` denotes `1995 <= year < 2018` and `year: ['range(]', 1995, 2018]` denotes `1995 < year <= 2018`
