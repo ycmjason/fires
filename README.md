@@ -34,7 +34,7 @@ Each entry of the `queryObj` contains a key and value pair of `field` and `query
 
 1. `value`, e.g. `'us'` which is equivilant to `['==', 'us']`
 2. `[operator, value]`, e.g. `['>=', 21]`, `['array-contains', doc]`, ...
-3. `[rangeOperator, value, value]` - `['range[]', 0, 5]`
+3. `[rangeOperator, value, value]`, e.g. `['range[]', 0, 5]`
 
 Multiple entries will be treated as logical `AND`. 
 
