@@ -9,26 +9,41 @@ Firestore is powerful and robust with high level of flexibility. However, I pers
 For example, let's take a look at the following code for retrieving a single document.
 
 ```js
+const db = firebase.firestore();
 const collectionReference = db.collection('cities');
 const documentReference = collectionReference.doc('LA');
 const documentSnapshot = await documentReference.get();
 const documentData = documentSnapshot.data();
 /* after 4 operations, we finally get our data!
  *   {
- *     name: "Los Angeles",
- *     state: "CA",
- *     country: "USA"
+ *       name: "Los Angeles",
+ *       state: "CA",
+ *       country: "USA"
  *   }
  */
 ```
 
-As illustrated above, just to retrieve a single document, we have to perform 4 operations: `CollectionReference > DocumentReference > DocumentSnapshot > DocumentData`.
+As illustrated above, in order to retrieve a single document, 4 unintuitive steps are involved: `CollectionReference > DocumentReference > DocumentSnapshot > DocumentData`.
 
-Firestore API is highly flexible; it takes care of many use cases of Firestore, allowing developers to optimise the communications between their application and the database.
+Firestore API is highly flexible. It takes care of many use cases; allowing developers to do all sorts of optimisation. However, this flexibility comes at a cost of DX (developer experience) as illustrated previously how a presumably simple operation requires 4 unintuitive steps.
 
-However, this flexibility comes at a cost of developer experience (because there are extra unintuitive steps involved). Especially if you are only interested in the data itself.
+Firecracker aims to improve the developer experience by exposing a very intuitive and relatively simple API (merely 3 classes). It hides some of the complexity from the Firestore API, allowing developers to focus on the data. Hoever this also loses some of the flexibility that the original Firestore API provides.
 
-Firecracker exposes a very simple API (merely 3 classes); allowing developers to focus on the data.
+Conceptually, retriving a document from a collection should be as simple as `Collection -> Document`. This is exactly what you will do with Firecracker:
+
+```js
+const db = firecracker();
+const collection = db.collection('cities');
+const document = collection.findById('LA');
+/* {
+ *     name: "Los Angeles",
+ *     state: "CA",
+ *     country: "USA"
+ * }
+ */
+```
+
+For more detailed API documentation, please see below.
 
 ## Install
 
