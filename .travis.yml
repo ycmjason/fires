@@ -5,5 +5,11 @@ node_js: 8
 before_install:
   - openssl aes-256-cbc -K $encrypted_5bf232b6b65f_key -iv $encrypted_5bf232b6b65f_iv -in .env.local.enc -out .env.local -d
 
+install:
+  - npm install -g codecov
+
 script:
-  - npm test -- --verbose
+  - npm test -- --coverage --verbose
+
+after_script:
+  - codecov

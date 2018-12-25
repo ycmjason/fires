@@ -5,4 +5,6 @@ require('dotenv').config({ path: resolve(process.cwd(), '.env.local') });
 
 module.exports = {
   testMatch: ['**/__tests__/**/*-test.js'],
+  coverageDirectory: './coverage/',
+  collectCoverage: false,
 };
