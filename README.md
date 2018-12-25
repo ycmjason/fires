@@ -1,6 +1,7 @@
 # Firecracker
 
 [![Build Status](https://travis-ci.com/ycmjason/firecracker.svg?branch=master)](https://travis-ci.com/ycmjason/firecracker)
+[![codecov](https://codecov.io/gh/ycmjason/firecracker/branch/master/graph/badge.svg)](https://codecov.io/gh/ycmjason/firecracker)
 
 Firestore simplified.
 
