@@ -1,5 +1,8 @@
 import firebase from 'firebase';
-import { aMapValues } from './utils';
+import {
+  transformDocumentRef,
+  transformDocumentSnapshot,
+} from './FirecrackerTransformers';
 
 export default class FirecrackerDocument {
   constructor ({ $ref, data }) {
@@ -45,41 +48,3 @@ export default class FirecrackerDocument {
   }
 }
 
-const transformDocumentRef = async $docRef => {
-  return await transformDocumentSnapshot(await $docRef.get());
-};
-
-const transformDocumentSnapshot = async $snapshot => {
-  const $docData = $snapshot.data();
-
-  if (!$docData) return null;
-
-  return new FirecrackerDocument({
-    $ref: $snapshot.ref,
-    data: await transformDocumentData($docData),
-  });
-};
-
-const transformDocumentData = async $docData => {
-  const transformValue = async v => {
-    if (v instanceof firebase.firestore.DocumentReference) {
-      return await transformDocumentRef(v);
-    }
-
-    if (v instanceof firebase.firestore.Timestamp) {
-      return v.toDate();
-    }
-
-    if (Array.isArray(v)) {
-      return await Promise.all(v.map(transformValue));
-    }
-
-    if (typeof v === 'object') {
-      return await transformDocumentData(v);
-    }
-
-    return v;
-  };
-
-  return await aMapValues($docData, transformValue);
-};
