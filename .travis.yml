@@ -6,4 +6,4 @@ before_install:
   - openssl aes-256-cbc -K $encrypted_5bf232b6b65f_key -iv $encrypted_5bf232b6b65f_iv -in .env.local.enc -out .env.local -d
 
 script:
-  - npm test -- --maxWorkers=10
+  - npm test -- -i
