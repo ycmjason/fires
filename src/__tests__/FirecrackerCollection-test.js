@@ -1,8 +1,11 @@
 jest.mock('../FirecrackerDocument');
-import { firestore } from './helpers/firebase';
 import { FirecrackerCollection, FirecrackerDocument } from '..';
+jest.mock('../FirecrackerTransformers');
+import { executeQuery } from '../FirecrackerTransformers';
+import { when } from 'jest-when';
 
 describe('FirecrackerCollection', () => {
+  /*
   const $collection = firestore.collection('test');
 
   beforeAll(async () => {
@@ -15,16 +18,43 @@ describe('FirecrackerCollection', () => {
       expect(collection.$collection).toBe($collection);
     });
   });
+  */
 
-  describe('firecrackerCollection.findById(id)', () => {
-    it('should call FirecrackerDocument.from($docRef)', async () => {
-      const collection = new FirecrackerCollection($collection);
-      FirecrackerDocument.from.mockResolvedValue('yoyo');
+  it('firecrackerCollection.findById(id)', async () => {
+    const $mockCollection = { doc: jest.fn() };
 
-      expect(await collection.findById('a'))
-        .toBe('yoyo');
-      expect(FirecrackerDocument.from)
-        .toHaveBeenCalledWith($collection.doc('a'));
-    });
+    when($mockCollection.doc)
+      .calledWith('id')
+      .mockReturnValue('the ref');
+
+    when(FirecrackerDocument.from)
+      .calledWith('the ref')
+      .mockResolvedValue('yoyo');
+
+    const collection = new FirecrackerCollection($mockCollection);
+
+    expect(await collection.findById('id')).toBe('yoyo');
+  });
+
+  it ('firecrackerCollection.find(queryObj)', async () => {
+    const $mockCollection = { where: jest.fn() };
+    const $mockQuery = {
+      get: jest.fn().mockResolvedValue({
+        docs: ['$doc1', '$doc2'],
+      }),
+    };
+
+    when($mockCollection.where)
+      .calledWith('country', '==', 'us')
+      .mockReturnValue($mockQuery);
+
+    when(executeQuery)
+      .calledWith($mockQuery)
+      .mockResolvedValue(['doc1', 'doc2']);
+
+    const collection = new FirecrackerCollection($mockCollection);
+    expect(await collection.find({
+      country: 'us',
+    })).toEqual(['doc1', 'doc2']);
   });
 });

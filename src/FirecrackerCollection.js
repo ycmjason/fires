@@ -1,4 +1,5 @@
 import FirecrackerDocument from './FirecrackerDocument';
+import { executeQuery, transformQuerySnapshot } from './FirecrackerTransformers';
 
 export default class FirecrackerCollection {
   constructor ($collection) {
@@ -54,17 +55,6 @@ export default class FirecrackerCollection {
     );
   }
 }
-
-const transformQuerySnapshot = async $querySnapshot => {
-  return await Promise.all(
-    $querySnapshot.docs.map(FirecrackerDocument.from)
-  );
-};
-
-const executeQuery = async $query => {
-  const $querySnapshot = await $query.get();
-  return await transformQuerySnapshot($querySnapshot);
-};
 
 const parseQueryObj = queryObj => {
   const parseQueryEntry = (field, query) => {
