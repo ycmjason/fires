@@ -3,23 +3,19 @@ import { firestore } from './helpers/firebase';
 import { FirecrackerCollection, FirecrackerDocument } from '..';
 
 describe('FirecrackerCollection', () => {
-  beforeAll(async () => {
-    const $collection = firestore.collection('test');
-    await $collection.doc('a').set({ value: 30 });
-  });
+  const $collection = firestore.collection('test');
 
   describe('new FirecrackerCollection($collection)', () => {
     it('should point to this.$collection the correct collection', () => {
-      /*
       const collection = new FirecrackerCollection($collection);
       expect(collection.$collection).toBe($collection);
-      */
     });
   });
 
   describe('firecrackerCollection.findById(id)', () => {
     it('should call FirecrackerDocument.from($docRef)', async () => {
       /*
+      await $collection.doc('a').set({ value: 30 });
       const collection = new FirecrackerCollection($collection);
       FirecrackerDocument.from.mockResolvedValue('yoyo');
 
