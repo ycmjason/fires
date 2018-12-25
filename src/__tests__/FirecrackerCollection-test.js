@@ -1,7 +1,9 @@
 jest.mock('../FirecrackerDocument');
 import { FirecrackerCollection, FirecrackerDocument } from '..';
-jest.mock('../FirecrackerTransformers');
-import { executeQuery } from '../FirecrackerTransformers';
+
+jest.mock('../FirecrackerTransformers/executeQuery');
+import executeQuery from '../FirecrackerTransformers/executeQuery';
+
 import { when } from 'jest-when';
 
 describe('FirecrackerCollection', () => {
