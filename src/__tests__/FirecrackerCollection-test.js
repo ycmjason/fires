@@ -5,9 +5,8 @@ import { FirecrackerCollection, FirecrackerDocument } from '..';
 describe('FirecrackerCollection', () => {
   const $collection = firestore.collection('test');
 
-  beforeAll(async () => {
-    await $collection.doc('a').set({ value: 30 });
-    console.log('hi');
+  beforeAll((next) => {
+    $collection.doc('a').set({ value: 30 }).then(next);
   });
 
   describe('new FirecrackerCollection($collection)', () => {
