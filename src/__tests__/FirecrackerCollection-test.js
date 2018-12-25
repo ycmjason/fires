@@ -14,7 +14,6 @@ describe('FirecrackerCollection', () => {
 
   describe('firecrackerCollection.findById(id)', () => {
     it('should call FirecrackerDocument.from($docRef)', async () => {
-      /*
       await $collection.doc('a').set({ value: 30 });
       const collection = new FirecrackerCollection($collection);
       FirecrackerDocument.from.mockResolvedValue('yoyo');
@@ -23,7 +22,6 @@ describe('FirecrackerCollection', () => {
         .toBe('yoyo');
       expect(FirecrackerDocument.from)
         .toHaveBeenCalledWith($collection.doc('a'));
-        */
     });
   });
 });
