@@ -1,4 +1,5 @@
 import FirecrackerDocument from '../FirecrackerDocument';
+import transformDocumentData from './_transformDocumentData';
 
 export default async $snapshot => {
   const $docData = $snapshot.data();

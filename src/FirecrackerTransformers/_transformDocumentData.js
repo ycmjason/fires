@@ -1,5 +1,5 @@
 import firebase from 'firebase';
-import { aMapValues } from './utils';
+import { aMapValues } from '../utils';
 import transformDocumentRef from './transformDocumentRef';
 
 const transformDocumentData = async $docData => {

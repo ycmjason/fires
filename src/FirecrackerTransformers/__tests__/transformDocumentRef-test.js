@@ -6,7 +6,7 @@ import transformDocumentSnapshot from '../transformDocumentSnapshot';
 import transformDocumentRef from '../transformDocumentRef';
 
 describe('transformDocumentRef', () => {
-  it('return a document', async () => {
+  it('should return a document', async () => {
     const $mockDocRef = { get: jest.fn().mockResolvedValue('$documentSnapshot') };
 
     when(transformDocumentSnapshot)
