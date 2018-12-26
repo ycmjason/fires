@@ -12,9 +12,18 @@ export default class Firecracker {
   constructor ($firestore) {
     checkFirestoreConfig($firestore);
     this.$firestore = $firestore;
+    this.collectionMap = new Map();
   }
 
   collection (name) {
-    return new FirecrackerCollection(this.$firestore.collection(name));
+    const { collectionMap, $firestore } = this;
+
+    if (collectionMap.has(name)) {
+      return collectionMap.get(name);
+    }
+
+    const collection = new FirecrackerCollection($firestore.collection(name));
+    collectionMap.set(name, collection);
+    return collection;
   }
 }

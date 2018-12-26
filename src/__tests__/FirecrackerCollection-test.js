@@ -7,21 +7,6 @@ import executeQuery from '../FirecrackerTransformers/executeQuery';
 import { when } from 'jest-when';
 
 describe('FirecrackerCollection', () => {
-  /*
-  const $collection = firestore.collection('test');
-
-  beforeAll(async () => {
-    await $collection.doc('a').set({ value: 30 });
-  });
-
-  describe('new FirecrackerCollection($collection)', () => {
-    it('should point to this.$collection the correct collection', () => {
-      const collection = new FirecrackerCollection($collection);
-      expect(collection.$collection).toBe($collection);
-    });
-  });
-  */
-
   it('firecrackerCollection.findById(id)', async () => {
     const $mockCollection = { doc: jest.fn() };
 

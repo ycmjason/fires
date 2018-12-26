@@ -13,13 +13,12 @@ firebase.initializeApp({
 const firestore = firebase.firestore();
 firestore.settings({ timestampsInSnapshots: true });
 
-const clearCollection = async collection => {
+const clearCollection = async $collection => {
   await Promise.all(
-    (await collection.get()).docs
+    (await $collection.get()).docs
       .map(({ ref }) => ref)
       .map(async ref => await ref.delete())
   );
 };
 
-export default firebase;
 export { firestore, clearCollection };

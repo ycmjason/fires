@@ -1,5 +1,4 @@
 jest.mock('../FirecrackerCollection');
-import { Firecracker, FirecrackerCollection } from '..';
 
 describe('Firecracker', () => {
   it('', () => {});
