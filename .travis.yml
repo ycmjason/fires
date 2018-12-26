@@ -10,7 +10,7 @@ install:
   - npm install -g codecov
 
 script:
-  - npm test -- --coverage --verbose
+  - npm test -- --forceExit --coverage --verbose
 
 after_script:
   - codecov
