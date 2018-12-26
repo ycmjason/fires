@@ -1,11 +1,15 @@
 import { firestore, clearCollection } from './helpers/firebase.js';
-import Firecracker from '..';
+import firecracker, {
+  Firecracker,
+  FirecrackerCollection,
+  FirecrackerDocument,
+} from '..';
 
 describe('e2e - CRUD', () => {
-  let firecracker;
+  let db;
   let $collection;
   beforeAll(() => {
-    firecracker = Firecracker();
+    db = firecracker();
     $collection = firestore.collection('e2e');
   });
 
@@ -14,12 +18,25 @@ describe('e2e - CRUD', () => {
   });
 
   describe('Create', () => {
-    it('should be able to add new documents', async () => {
-      await firecracker.collection('e2e').create({ a: 3 });
+    describe('FirecrackerCollection.create', () => {
+      it('should be able to add new document', async () => {
+        await db.collection('e2e').create({ a: 3 });
 
-      const $querySnapshot = await $collection.get();
-      expect($querySnapshot.docs.length).toBe(1);
-      expect($querySnapshot.docs[0].data().a).toBe(3);
+        const $querySnapshot = await $collection.get();
+        expect($querySnapshot.docs.length).toBe(1);
+        expect($querySnapshot.docs[0].data().a).toBe(3);
+      });
+    });
+
+    describe('FirecrackerCollection.createWithId', () => {
+      it('should be able to add new document with specific ID', async () => {
+        await db.collection('e2e').createWithId('wow', { x: 5 });
+
+        const $querySnapshot = await $collection.get();
+        expect($querySnapshot.docs.length).toBe(1);
+        expect($querySnapshot.docs[0].id).toBe('wow');
+        expect($querySnapshot.docs[0].data().x).toBe(5);
+      });
     });
   });
 });
