@@ -29,4 +29,14 @@ describe('transformDocumentSnapshot', () => {
     expect(await transformDocumentSnapshot($mockDocSnapshot))
       .toEqual({ type: 'document' });
   });
+
+  it('should return null if the $docData is empty', async () => {
+    const $mockDocSnapshot = {
+      ref: '$documentRef',
+      data: jest.fn().mockReturnValue(undefined),
+    };
+
+    expect(await transformDocumentSnapshot($mockDocSnapshot))
+      .toEqual(null);
+  });
 });
