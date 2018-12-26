@@ -1,13 +1,13 @@
-import firebase from 'firebase';
+import { firestore } from 'firebase';
 import { aMapValues } from '../utils';
 import transformDocumentRef from './transformDocumentRef';
 
 const transformValue = async v => {
-  if (v instanceof firebase.firestore.DocumentReference) {
+  if (v instanceof firestore.DocumentReference) {
     return await transformDocumentRef(v);
   }
 
-  if (v instanceof firebase.firestore.Timestamp) {
+  if (v instanceof firestore.Timestamp) {
     return v.toDate();
   }
 
