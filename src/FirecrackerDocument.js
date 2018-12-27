@@ -5,10 +5,11 @@ import {
 } from './FirecrackerTransformers';
 
 export default class FirecrackerDocument {
-  constructor ({ $ref, data }) {
+  constructor ({ $ref, data, $metadata }) {
+    Object.assign(this, data);
     this.$id = $ref.id;
     this.$ref = $ref;
-    Object.assign(this, data);
+    this.$metadata = $metadata;
     Object.freeze(this);
   }
 
