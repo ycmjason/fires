@@ -11,6 +11,7 @@ const COLLECTION_NAME = 'e2e-create';
 describe('e2e - Create', () => {
   let db;
   let $collection;
+
   beforeAll(() => {
     db = firecracker();
     $collection = firestore.collection(COLLECTION_NAME);

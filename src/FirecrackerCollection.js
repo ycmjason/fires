@@ -38,14 +38,14 @@ export default class FirecrackerCollection {
   }
 
   // SUBSCRIBE
-  async subscribe (fn) {
+  subscribe (fn) {
     return this.$collection.onSnapshot(async $querySnapshot => {
       const docs = await transformQuerySnapshot($querySnapshot);
       return fn(docs);
     });
   }
 
-  async subscribeIncludingMetadata (fn) {
+  subscribeIncludingMetadata (fn) {
     return this.$collection.onSnapshot(
       { includeMetadataChanges: true },
       async $querySnapshot => {
