@@ -13,14 +13,17 @@ describe('transformDocumentSnapshot', () => {
     const $mockDocSnapshot = {
       ref: '$documentRef',
       data: jest.fn().mockReturnValue('$docData'),
+      metadata: '$metadata',
     };
 
     when(transformDocumentData)
       .calledWith('$docData')
       .mockResolvedValue('documentData');
 
-    FirecrackerDocument.mockImplementation(({ $ref, data }) => {
-      if ($ref === '$documentRef' && data === 'documentData') {
+    FirecrackerDocument.mockImplementation(({ $ref, data, $metadata }) => {
+      if ($ref, '$documentRef'
+        && data === 'documentData'
+        && $metadata === '$metadata') {
         return { type: 'document' };
       }
       return {};

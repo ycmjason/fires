@@ -9,6 +9,6 @@ export default async $snapshot => {
   return new FirecrackerDocument({
     $ref: $snapshot.ref,
     data: await transformDocumentData($docData),
+    $metadata: $snapshot.metadata,
   });
 };
-
