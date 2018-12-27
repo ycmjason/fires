@@ -1,8 +1,8 @@
-import { firestore, clearCollection } from './helpers/firebase.js';
+import { firestore, clearCollection } from '../helpers/firebase.js';
 import firecracker, {
   // eslint-disable-next-line no-unused-vars
   Firecracker, FirecrackerCollection, FirecrackerDocument
-} from '..';
+} from '../..';
 
 jest.setTimeout(10000);
 
