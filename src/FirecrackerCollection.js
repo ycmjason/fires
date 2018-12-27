@@ -38,19 +38,29 @@ export default class FirecrackerCollection {
   }
 
   // SUBSCRIBE
-  subscribe (fn) {
-    return this.$collection.onSnapshot(async $querySnapshot => {
-      const docs = await transformQuerySnapshot($querySnapshot);
-      return fn(docs);
-    });
+  subscribe (onNext, onError) {
+    return this.$collection.onSnapshot(
+      async $querySnapshot => {
+        const docs = await transformQuerySnapshot($querySnapshot);
+        return onNext(docs);
+      },
+      err => {
+        if (!onError) throw err;
+        onError(err);
+      },
+    );
   }
 
-  subscribeIncludingMetadata (fn) {
+  subscribeIncludingMetadata (onNext, onError) {
     return this.$collection.onSnapshot(
       { includeMetadataChanges: true },
       async $querySnapshot => {
         const docs = await transformQuerySnapshot($querySnapshot);
-        return fn(docs, $querySnapshot.metadata);
+        return onNext(docs, $querySnapshot.metadata);
+      },
+      err => {
+        if (!onError) throw err;
+        onError(err);
       },
     );
   }

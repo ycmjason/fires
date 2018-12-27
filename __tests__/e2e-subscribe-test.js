@@ -28,21 +28,7 @@ describe('e2e - Subscribe', () => {
   });
 
   describe('FirecrackerCollection.subscribe', () => {
-    it('should listen to document created events', async done => {
-      cleanUpLaterPlease(
-        db.collection(COLLECTION_NAME).subscribe(docs => {
-          expect(docs).toBeInstanceOf(Array);
-          expect(docs).toHaveLength(1);
-          expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-          expect(docs[0]).toEqual(expect.objectContaining({ a: 3 }));
-          done();
-        })
-      );
-
-      await $collection.add({ a: 3 });
-    });
-
-    it('should listen to document updated events', async done => {
+    it('should listen to document events', async done => {
       let count = 0;
       cleanUpLaterPlease(
         db.collection(COLLECTION_NAME).subscribe(docs => {
@@ -60,6 +46,10 @@ describe('e2e - Subscribe', () => {
               expect(docs[0]).toEqual(expect.objectContaining({ a: 10 }));
               done();
               break;
+            case 2:
+              expect(docs).toBeInstanceOf(Array);
+              expect(docs).toHaveLength(0);
+              break;
             default:
               throw Error(`Called the ${count}th time!`);
           }
@@ -69,6 +59,7 @@ describe('e2e - Subscribe', () => {
 
       const $docRef = await $collection.add({ a: 3 });
       await $docRef.set({ a: 10 });
+      await $docRef.delete();
     });
   });
 });
