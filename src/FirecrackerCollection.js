@@ -30,10 +30,7 @@ export default class FirecrackerCollection {
 
   async find (queryObj) {
     // CollectionRef extends Query
-    let $query = this.$collection;
-    for (const [field, operator, value] of _parseQueryObj(queryObj)) {
-      $query = $query.where(field, operator, value);
-    }
+    const $query = _where(this.$collection, queryObj);
     return await executeQuery($query);
   }
 
@@ -41,8 +38,9 @@ export default class FirecrackerCollection {
   subscribe (...args) {
     const { $collection } = this;
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
+    const $query = _where(this.$collection, queryObj);
     return _subscribe({
-      $collection,
+      $query,
       queryObj,
       onNext,
       onError,
@@ -52,8 +50,9 @@ export default class FirecrackerCollection {
   subscribeIncludingMetadata (...args) {
     const { $collection } = this;
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
+    const $query = _where($collection, queryObj);
     return _subscribe({
-      $collection,
+      $query,
       queryObj,
       options: { includeMetadataChanges: true },
       onNext,
@@ -83,13 +82,13 @@ const _parseSubscribeArgs = (queryObjOrOnNext, onNextOrOnError, onError) => {
 };
 
 const _subscribe = ({
-  $collection,
+  $query,
   queryObj = {},
   options = {},
   onNext,
   onError,
 }) => {
-  return $collection.onSnapshot(
+  return $query.onSnapshot(
     options,
     async $querySnapshot => {
       const docs = await transformQuerySnapshot($querySnapshot);
@@ -100,6 +99,14 @@ const _subscribe = ({
       onError(err);
     },
   );
+};
+
+const _where = ($query, queryObj) => {
+  let $q = $query;
+  for (const [field, operator, value] of _parseQueryObj(queryObj)) {
+    $q = $q.where(field, operator, value);
+  }
+  return $q;
 };
 
 const _parseQueryObj = (queryObj = {}) => {
