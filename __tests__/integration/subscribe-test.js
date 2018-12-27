@@ -6,7 +6,7 @@ import firecracker, {
 
 jest.setTimeout(10000);
 
-describe('e2e - Subscribe', () => {
+describe('Integration - Subscribe', () => {
   let db;
   let $collection;
 
@@ -20,11 +20,15 @@ describe('e2e - Subscribe', () => {
     // Give each test a separate collection.
     // This is because onSnapshot will cache results,
     // which make the tests interfere each other.
-    collectionName = `e2e-subscribe-${i++}th-test`;
+    collectionName = `integration-subscribe-${i++}th-test`;
     $collection = firestore.collection(collectionName);
   });
 
   afterEach(async () => {
+    await clearCollection($collection);
+  });
+
+  afterAll(async () => {
     await clearCollection($collection);
   });
 

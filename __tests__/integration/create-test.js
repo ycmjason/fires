@@ -6,9 +6,9 @@ import firecracker, {
 
 jest.setTimeout(10000);
 
-const COLLECTION_NAME = 'e2e-create';
+const COLLECTION_NAME = 'integration-create';
 
-describe('e2e - Create', () => {
+describe('Integration - Create', () => {
   let db;
   let $collection;
 
@@ -18,6 +18,10 @@ describe('e2e - Create', () => {
   });
 
   beforeEach(async () => {
+    await clearCollection($collection);
+  });
+
+  afterAll(async () => {
     await clearCollection($collection);
   });
 
