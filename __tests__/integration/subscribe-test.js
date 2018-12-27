@@ -6,6 +6,25 @@ import firecracker, {
 
 jest.setTimeout(10000);
 
+const createStreamCB = () => {
+  const fns = [];
+  let n = 0;
+
+  const cb = (...args) => {
+    const fn = fns[n++];
+    if (!fn) throw Error(`Called the ${n}-th time, but no CB is registered!`);
+
+    return fn(...args);
+  };
+
+  cb.next = (fn) => {
+    fns.push(fn);
+    return cb;
+  };
+
+  return cb;
+};
+
 describe('Integration - Subscribe', () => {
   let db;
   let $collection;
@@ -28,42 +47,33 @@ describe('Integration - Subscribe', () => {
   });
 
   afterEach(async () => {
-    await clearCollection($collection);
-  });
-
-  afterEach(async () => {
     while (cleanUps.length > 0) cleanUps.pop()();
     await clearCollection($collection);
   });
 
   describe('FirecrackerCollection.subscribe', () => {
     it('should listen to document events', async done => {
-      let count = 0;
       addCleanUp(
-        db.collection(collectionName).subscribe(docs => {
-          switch (count) {
-            case 0:
+        db.collection(collectionName).subscribe(
+          createStreamCB()
+            .next(docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
               expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
               expect(docs[0]).toEqual(expect.objectContaining({ a: 3 }));
-              break;
-            case 1:
+            })
+            .next(docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
               expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
               expect(docs[0]).toEqual(expect.objectContaining({ a: 10 }));
-              break;
-            case 2:
+            })
+            .next(docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(0);
               done();
-              break;
-            default:
-              throw Error(`Called the ${count}th time!`);
-          }
-          count++;
-        })
+            })
+        )
       );
 
       // create
@@ -75,40 +85,33 @@ describe('Integration - Subscribe', () => {
     });
 
     it('should listen to document events with query', async done => {
-      let count = 0;
       addCleanUp(
         db.collection(collectionName).subscribe(
           {
             a: ['<=', 5],
           },
-          docs => {
-            switch (count) {
-              case 0:
-                expect(docs).toBeInstanceOf(Array);
-                expect(docs).toHaveLength(1);
-                expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-                expect(docs[0]).toEqual(expect.objectContaining({ a: 3 }));
-                break;
-              case 1:
-                expect(docs).toBeInstanceOf(Array);
-                expect(docs).toHaveLength(0);
-                break;
-              case 2:
-                expect(docs).toBeInstanceOf(Array);
-                expect(docs).toHaveLength(1);
-                expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-                expect(docs[0]).toEqual(expect.objectContaining({ a: 0 }));
-                break;
-              case 3:
-                expect(docs).toBeInstanceOf(Array);
-                expect(docs).toHaveLength(0);
-                done();
-                break;
-              default:
-                throw Error(`Called the ${count}th time!`);
-            }
-            count++;
-          }
+          createStreamCB()
+            .next(docs => {
+              expect(docs).toBeInstanceOf(Array);
+              expect(docs).toHaveLength(1);
+              expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
+              expect(docs[0]).toEqual(expect.objectContaining({ a: 3 }));
+            })
+            .next(docs => {
+              expect(docs).toBeInstanceOf(Array);
+              expect(docs).toHaveLength(0);
+            })
+            .next(docs => {
+              expect(docs).toBeInstanceOf(Array);
+              expect(docs).toHaveLength(1);
+              expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
+              expect(docs[0]).toEqual(expect.objectContaining({ a: 0 }));
+            })
+            .next(docs => {
+              expect(docs).toBeInstanceOf(Array);
+              expect(docs).toHaveLength(0);
+              done();
+            })
         )
       );
 
