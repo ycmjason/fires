@@ -1,10 +1,11 @@
 const { resolve } = require('path');
 
-require('dotenv').config(); // load .env
-
+// .env.test.local or .env.ci.local
 require('dotenv').config({
   path: resolve(process.cwd(), `.env.${process.env.NODE_ENV || 'test'}.local`),
 });
+// .env
+require('dotenv').config();
 
 module.exports = {
   testMatch: ['**/__tests__/**/*-test.js'],
