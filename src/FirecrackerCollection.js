@@ -36,7 +36,6 @@ export default class FirecrackerCollection {
 
   // SUBSCRIBE
   subscribe (...args) {
-    const { $collection } = this;
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     const $query = _where(this.$collection, queryObj);
     return _subscribe({
@@ -48,9 +47,8 @@ export default class FirecrackerCollection {
   }
 
   subscribeIncludingMetadata (...args) {
-    const { $collection } = this;
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
-    const $query = _where($collection, queryObj);
+    const $query = _where(this.$collection, queryObj);
     return _subscribe({
       $query,
       queryObj,
