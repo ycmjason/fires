@@ -25,11 +25,11 @@ export default class FirecrackerCollection {
   }
 
   async findAll () {
-    // CollectionReference extends Query
-    return await executeQuery(this.$collection);
+    return await this.find();
   }
 
   async find (queryObj) {
+    // CollectionRef extends Query
     let $query = this.$collection;
     for (const [field, operator, value] of _parseQueryObj(queryObj)) {
       $query = $query.where(field, operator, value);
@@ -38,19 +38,23 @@ export default class FirecrackerCollection {
   }
 
   // SUBSCRIBE
-  subscribe (onNext, onError) {
+  subscribe (...args) {
     const { $collection } = this;
+    const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     return _subscribe({
       $collection,
+      queryObj,
       onNext,
       onError,
     });
   }
 
-  subscribeIncludingMetadata (onNext, onError) {
+  subscribeIncludingMetadata (...args) {
     const { $collection } = this;
+    const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     return _subscribe({
       $collection,
+      queryObj,
       options: { includeMetadataChanges: true },
       onNext,
       onError,
@@ -58,7 +62,33 @@ export default class FirecrackerCollection {
   }
 }
 
-const _subscribe = ({ $collection, options = {}, onNext, onError }) => {
+const _parseSubscribeArgs = (queryObjOrOnNext, onNextOrOnError, onError) => {
+  if (typeof queryObjOrOnNext === 'object') {
+    return {
+      queryObj: queryObjOrOnNext,
+      onNext: onNextOrOnError,
+      onError,
+    };
+  }
+
+  if (typeof queryObjOrOnNext === 'function') {
+    return {
+      queryObj: undefined,
+      onNext: queryObjOrOnNext,
+      onError, onNextOrOnError,
+    };
+  }
+
+  throw Error('Unexpected error. Please check the arguments of subscribe or subscribeIncludingMetadata');
+};
+
+const _subscribe = ({
+  $collection,
+  queryObj = {},
+  options = {},
+  onNext,
+  onError,
+}) => {
   return $collection.onSnapshot(
     options,
     async $querySnapshot => {
@@ -72,7 +102,7 @@ const _subscribe = ({ $collection, options = {}, onNext, onError }) => {
   );
 };
 
-const _parseQueryObj = queryObj => {
+const _parseQueryObj = (queryObj = {}) => {
   const parseQueryEntry = (field, query) => {
     if (['boolean', 'string', 'number'].includes(typeof query)) {
       return [[field, '==', query]];
