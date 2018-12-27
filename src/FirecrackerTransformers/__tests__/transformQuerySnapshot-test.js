@@ -6,9 +6,10 @@ import FirecrackerDocument from '../../FirecrackerDocument';
 import transformQuerySnapshot from '../transformQuerySnapshot';
 
 describe('FirecrackerTransformers.transformQuerySnapshot', () => {
-  it ('should return a list of dcouments', async () => {
+  it ('should return a list of dcouments with $metadata', async () => {
     const $mockQuerySnapshot = {
       docs: ['$doc1', '$doc2'],
+      metadata: '$metadata',
     };
 
     when(FirecrackerDocument.from)
@@ -20,6 +21,10 @@ describe('FirecrackerTransformers.transformQuerySnapshot', () => {
       .mockResolvedValue('doc2');
 
     expect(await transformQuerySnapshot($mockQuerySnapshot))
-      .toEqual(['doc1', 'doc2']);
+      .toEqual((() => {
+        const expectedDocs = ['doc1', 'doc2'];
+        expectedDocs.$metadata = '$metadata';
+        return expectedDocs;
+      })());
   });
 });
