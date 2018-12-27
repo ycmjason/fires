@@ -31,7 +31,7 @@ export default class FirecrackerCollection {
 
   async find (queryObj) {
     let $query = this.$collection;
-    for (const [field, operator, value] of parseQueryObj(queryObj)) {
+    for (const [field, operator, value] of _parseQueryObj(queryObj)) {
       $query = $query.where(field, operator, value);
     }
     return await executeQuery($query);
@@ -39,34 +39,40 @@ export default class FirecrackerCollection {
 
   // SUBSCRIBE
   subscribe (onNext, onError) {
-    return this.$collection.onSnapshot(
-      async $querySnapshot => {
-        const docs = await transformQuerySnapshot($querySnapshot);
-        return onNext(docs);
-      },
-      err => {
-        if (!onError) throw err;
-        onError(err);
-      },
-    );
+    const { $collection } = this;
+    return _subscribe({
+      $collection,
+      onNext,
+      onError,
+    });
   }
 
   subscribeIncludingMetadata (onNext, onError) {
-    return this.$collection.onSnapshot(
-      { includeMetadataChanges: true },
-      async $querySnapshot => {
-        const docs = await transformQuerySnapshot($querySnapshot);
-        return onNext(docs, $querySnapshot.metadata);
-      },
-      err => {
-        if (!onError) throw err;
-        onError(err);
-      },
-    );
+    const { $collection } = this;
+    return _subscribe({
+      $collection,
+      options: { includeMetadataChanges: true },
+      onNext,
+      onError,
+    });
   }
 }
 
-const parseQueryObj = queryObj => {
+const _subscribe = ({ $collection, options = {}, onNext, onError }) => {
+  return $collection.onSnapshot(
+    options,
+    async $querySnapshot => {
+      const docs = await transformQuerySnapshot($querySnapshot);
+      return onNext(docs, $querySnapshot.metadata);
+    },
+    err => {
+      if (!onError) throw err;
+      onError(err);
+    },
+  );
+};
+
+const _parseQueryObj = queryObj => {
   const parseQueryEntry = (field, query) => {
     if (['boolean', 'string', 'number'].includes(typeof query)) {
       return [[field, '==', query]];
@@ -91,7 +97,7 @@ const parseQueryObj = queryObj => {
     }
 
     if (typeof query === 'object') {
-      return parseQueryObj(query).map(([subfield, operator, value]) => {
+      return _parseQueryObj(query).map(([subfield, operator, value]) => {
         return [`${field}.${subfield}`, operator, value];
       });
     }
