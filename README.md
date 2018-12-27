@@ -1,4 +1,4 @@
-> ## 🛠 Status:Under Development
+> ## 🛠 Status: Under Development
 > Firecracker is currently under active development. Until the 1.0 version, there might be many changes to the API. But we encourage you to try it out and welcome any feedback.
 
 # Firecracker
