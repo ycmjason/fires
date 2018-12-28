@@ -5,7 +5,7 @@ import {
 } from './FirecrackerTransformers';
 
 export default class FirecrackerDocument {
-  constructor ({ $ref, data, $metadata }) {
+  constructor ({ $ref, $metadata, data }) {
     Object.assign(this, data);
     this.$id = $ref.id;
     this.$ref = $ref;
@@ -31,20 +31,40 @@ export default class FirecrackerDocument {
   }
 
   // SUBSCRIBE
-  async subscribe (fn) {
-    return this.$ref.onSnapshot(async $documentSnapshot => {
-      const doc = await FirecrackerDocument.from($documentSnapshot);
-      return fn(doc);
+  subscribe (onNext, onError) {
+    return _subscribe({
+      $documentRef: this.$ref,
+      onNext,
+      onError,
     });
   }
 
-  async subscribeIncludingMetadata (fn) {
-    return this.$ref.onSnapshot(
-      { includeMetadataChanges: true },
-      async $documentSnapshot => {
-        const doc = await FirecrackerDocument.from($documentSnapshot);
-        return fn(doc, $documentSnapshot.metadata);
-      },
-    );
+  subscribeIncludingMetadata (onNext, onError) {
+    return _subscribe({
+      $documentRef: this.$ref,
+      options: { includeMetadataChanges: true },
+      onNext,
+      onError,
+    });
   }
 }
+
+
+const _subscribe = ({
+  $documentRef,
+  options = {},
+  onNext,
+  onError,
+}) => {
+  return $documentRef.onSnapshot(
+    options,
+    async $documentSnapshot => {
+      const docs = await transformDocumentSnapshot($documentSnapshot);
+      return onNext(docs);
+    },
+    err => {
+      if (!onError) throw err;
+      onError(err);
+    },
+  );
+};

@@ -90,7 +90,7 @@ const _subscribe = ({
     options,
     async $querySnapshot => {
       const docs = await transformQuerySnapshot($querySnapshot);
-      return onNext(docs, $querySnapshot.metadata);
+      return onNext(docs);
     },
     err => {
       if (!onError) throw err;

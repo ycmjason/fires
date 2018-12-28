@@ -28,8 +28,8 @@ const createStreamCB = () => {
 describe('Integration - Subscribe', () => {
   let db;
   let $collection;
-  let cleanUps = [];
-  let addCleanUp = fn => cleanUps.push(fn);
+  const cleanUps = [];
+  const addCleanUp = fn => cleanUps.push(fn);
 
   beforeAll(() => {
     db = firecracker();
@@ -60,13 +60,13 @@ describe('Integration - Subscribe', () => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
               expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-              expect(docs[0]).toEqual(expect.objectContaining({ a: 3 }));
+              expect(docs[0]).toMatchObject({ a: 3 });
             })
             .next(docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
               expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-              expect(docs[0]).toEqual(expect.objectContaining({ a: 10 }));
+              expect(docs[0]).toMatchObject({ a: 10 });
             })
             .next(docs => {
               expect(docs).toBeInstanceOf(Array);
@@ -95,7 +95,7 @@ describe('Integration - Subscribe', () => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
               expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-              expect(docs[0]).toEqual(expect.objectContaining({ a: 3 }));
+              expect(docs[0]).toMatchObject({ a: 3 });
             })
             .next(docs => {
               expect(docs).toBeInstanceOf(Array);
@@ -105,7 +105,7 @@ describe('Integration - Subscribe', () => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
               expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
-              expect(docs[0]).toEqual(expect.objectContaining({ a: 0 }));
+              expect(docs[0]).toMatchObject({ a: 0 });
             })
             .next(docs => {
               expect(docs).toBeInstanceOf(Array);
@@ -123,6 +123,33 @@ describe('Integration - Subscribe', () => {
       await $docRef.set({ a: 0 });
       // delete
       await $docRef.delete();
+    });
+  });
+
+  describe('FirecrackerDocument.subscribe', () => {
+    it('should listen to document events', async done => {
+      const $docRef = await $collection.add({ a: 3 });
+      const document = await db.collection(collectionName).findById($docRef.id);
+
+      addCleanUp(
+        document.subscribe(
+          createStreamCB()
+            .next(async doc => {
+              expect(doc).toBeInstanceOf(FirecrackerDocument);
+              expect(doc).toMatchObject({ a: 3 });
+              await $docRef.set({ a: 10 });
+            })
+            .next(async doc => {
+              expect(doc).toBeInstanceOf(FirecrackerDocument);
+              expect(doc).toMatchObject({ a: 10 });
+              await $docRef.delete();
+            })
+            .next(async doc => {
+              expect(doc).toBeNull();
+              done();
+            })
+        )
+      );
     });
   });
 });
