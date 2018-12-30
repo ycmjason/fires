@@ -31,6 +31,12 @@ export default class FirecrackerDocument {
     return FirecrackerDocument.from(this.$ref);
   }
 
+  // Delete
+  async delete () {
+    await this.$ref.delete();
+    return;
+  }
+
   // SUBSCRIBE
   subscribe (onNext, onError) {
     return _subscribe({

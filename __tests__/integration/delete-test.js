@@ -4,9 +4,9 @@ import firecracker, {
   Firecracker, FirecrackerCollection, FirecrackerDocument
 } from '../..';
 
-const COLLECTION_NAME = 'integration-update';
+const COLLECTION_NAME = 'integration-delete';
 
-describe('Integration - Update', () => {
+describe('Integration - Delete', () => {
   let db;
   let $collection;
 
@@ -23,18 +23,15 @@ describe('Integration - Update', () => {
     await clearCollection($collection);
   });
 
-  describe('FirecrackerDocument.update', () => {
-    it('should be able to update document', async () => {
+  describe('FirecrackerDocument.delete', () => {
+    it('should be able to delete document', async () => {
       const $docRef = await $collection.add({ wow: 3, f: 'hello' });
 
       const doc = await db.collection(COLLECTION_NAME).findById($docRef.id);
-      await doc.update({ f: 'world' });
+      await doc.delete();
 
       const $docSnapshot = await $docRef.get();
-      expect($docSnapshot.data()).toMatchObject({
-        wow: 3,
-        f: 'world',
-      });
+      expect($docSnapshot.exists).toBe(false);
     });
   });
 });
