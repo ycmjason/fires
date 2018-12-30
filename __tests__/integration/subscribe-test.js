@@ -51,20 +51,24 @@ describe('Integration - Subscribe', () => {
 
   describe('FirecrackerCollection.subscribe', () => {
     it('should listen to document events', async done => {
+      const $docRef = await $collection.add({ a: 3 });
+
       addCleanUp(
         db.collection(collectionName).subscribe(
           createStreamCB()
-            .next(docs => {
+            .next(async docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
-              expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
               expect(docs[0]).toMatchObject({ a: 3 });
+
+              await $docRef.set({ a: 10 });
             })
-            .next(docs => {
+            .next(async docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
-              expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
               expect(docs[0]).toMatchObject({ a: 10 });
+
+              await $docRef.delete();
             })
             .next(docs => {
               expect(docs).toBeInstanceOf(Array);
@@ -73,37 +77,36 @@ describe('Integration - Subscribe', () => {
             })
         )
       );
-
-      // create
-      const $docRef = await $collection.add({ a: 3 });
-      // update
-      await $docRef.set({ a: 10 });
-      // delete
-      await $docRef.delete();
     });
 
     it('should listen to document events with query', async done => {
+      const $docRef = await $collection.add({ a: 3 });
+
       addCleanUp(
         db.collection(collectionName).subscribe(
           {
             a: ['<=', 5],
           },
           createStreamCB()
-            .next(docs => {
+            .next(async docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
-              expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
               expect(docs[0]).toMatchObject({ a: 3 });
+
+              await $docRef.set({ a: 10 });
             })
-            .next(docs => {
+            .next(async docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(0);
+
+              await $docRef.set({ a: 0 });
             })
-            .next(docs => {
+            .next(async docs => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(1);
-              expect(docs[0]).toBeInstanceOf(FirecrackerDocument);
               expect(docs[0]).toMatchObject({ a: 0 });
+
+              await $docRef.delete();
             })
             .next(docs => {
               expect(docs).toBeInstanceOf(Array);
@@ -112,15 +115,6 @@ describe('Integration - Subscribe', () => {
             })
         )
       );
-
-      // create
-      const $docRef = await $collection.add({ a: 3 });
-      // update
-      await $docRef.set({ a: 10 });
-      // update
-      await $docRef.set({ a: 0 });
-      // delete
-      await $docRef.delete();
     });
   });
 
