@@ -16,16 +16,6 @@ const createMockFirestore = (base = {}) => {
 };
 
 describe('Firecracker', () => {
-  describe('new Firecracker($firestore)', () => {
-    it('should keep track of the $firestore', () => {
-      const $mockFirestore = createMockFirestore({});
-
-      const firecracker = new Firecracker($mockFirestore);
-
-      expect(firecracker.$firestore).toBe($mockFirestore);
-    });
-  });
-
   describe('firecracker.collection(name)', () => {
     it('should return a FirecrackerCollection', () => {
       const $mockFirestore = createMockFirestore({ collection: jest.fn() });
