@@ -4,6 +4,9 @@ import { FirecrackerCollection, FirecrackerDocument } from '..';
 jest.mock('../FirecrackerTransformers/executeQuery');
 import executeQuery from '../FirecrackerTransformers/executeQuery';
 
+jest.mock('../FirecrackerTransformers/transformQuerySnapshot');
+import transformQuerySnapshot from '../FirecrackerTransformers/transformQuerySnapshot';
+
 import { when } from 'jest-when';
 
 describe('FirecrackerCollection', () => {
@@ -89,5 +92,30 @@ describe('FirecrackerCollection', () => {
     expect(await collection.find({
       country: 'us',
     })).toEqual(['doc1', 'doc2']);
+  });
+
+  it ('firecrackerCollection.subscribe(queryObj, onNext, onError)', async done => {
+    when(transformQuerySnapshot)
+      .calledWith('$mockQuerySnapshot')
+      .mockResolvedValue(['doc1', 'doc2']);
+
+    const $mockQuery = { onSnapshot: jest.fn() };
+    $mockQuery.onSnapshot.mockImplementation((options, onNext, onError) => {
+      onNext('$mockQuerySnapshot');
+    });
+
+    const $mockCollection = { where: jest.fn() };
+    when($mockCollection.where)
+      .calledWith('country', '>', 'us')
+      .mockReturnValue($mockQuery);
+
+    const collection = new FirecrackerCollection($mockCollection);
+    await collection.subscribe(
+      { country: ['>', 'us'] },
+      (doc) => {
+        expect(doc).toEqual(['doc1', 'doc2']);
+        done();
+      }
+    );
   });
 });
