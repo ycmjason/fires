@@ -27,7 +27,8 @@ export default class FirecrackerDocument {
 
   // Update
   async update (data) {
-    this.$ref.update(data);
+    await this.$ref.update(data);
+    return FirecrackerDocument.from(this.$ref);
   }
 
   // SUBSCRIBE

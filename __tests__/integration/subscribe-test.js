@@ -4,8 +4,6 @@ import firecracker, {
   Firecracker, FirecrackerCollection, FirecrackerDocument
 } from '../..';
 
-jest.setTimeout(10000);
-
 const createStreamCB = () => {
   const fns = [];
   let n = 0;
