@@ -42,5 +42,18 @@ describe('Integration - Create', () => {
       expect($querySnapshot.docs[0].id).toBe('wow');
       expect($querySnapshot.docs[0].data().x).toBe(5);
     });
+
+    it('should not add any document if specific ID exists', async () => {
+      await $collection.doc('wow').set({ x: 3 });
+
+      await expect(
+        db.collection(COLLECTION_NAME).createWithId('wow', { x: 5 })
+      ).rejects.toMatchSnapshot();
+
+      const $querySnapshot = await $collection.get();
+      expect($querySnapshot.docs.length).toBe(1);
+      expect($querySnapshot.docs[0].id).toBe('wow');
+      expect($querySnapshot.docs[0].data().x).toBe(3);
+    });
   });
 });
