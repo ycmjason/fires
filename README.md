@@ -1,5 +1,5 @@
 > ## 🛠 Status: Under Development
-> Firecracker is currently under active development. Until the 1.0 version, there might be many changes to the API. But we encourage you to try it out and welcome any feedback.
+> Firecracker is still under active development. There might be many changes to the API but we still encourage you to try it out and give us feedback.
 
 # Firecracker
 
@@ -49,7 +49,7 @@ const document = await collection.findById('LA');
  */
 ```
 
-For more detailed API documentation, please see below.
+For a more detailed API documentation, please see below.
 
 ## Install
 
@@ -59,11 +59,38 @@ npm i @ycm.jason/firecracker
 
 ## Documentation
 
-### Firecracker
+### firecracker(): Firecracker
+
+This will initiate (if not already initiated) a `Firecracker` instance which is connected to the `firestore`. You will need to import the `firebase/firestore` module yourself. It is also required to have `timestampsInSnapshots` to true. All subsequent calls will return the same instance of `Firecracker`.
+
+```js
+// Initialise Firebase
+import firebase from 'firebase';
+import 'firebase/firestore';
+
+import firecracker from '@ycm.jason/firecracker';
+
+firebase.initializeApp({
+  apiKey: '### FIREBASE API KEY ###',
+  authDomain: '### FIREBASE AUTH DOMAIN ###',
+  projectId: '### CLOUD FIRESTORE PROJECT ID ###'
+});
+
+// Initialise Firestore
+const db = firebase.firestore();
+// REQUIRED: Disable deprecated features
+db.settings({
+  timestampsInSnapshots: true
+});
+
+const db = firecracker();
+
+firecracker() === firecracker(); // true
+```
 
 ### FirecrackerCollection
 
-#### firecrackerCollection.find(queryObj: Object)
+#### collection.find(queryObj: Object): FirecrackerDocument
 
 The `queryObj` specifies the criterias of the documents you wish to find.
 
