@@ -33,7 +33,7 @@ As illustrated above, in order to retrieve a single document, 4 unintuitive step
 
 Firestore API is highly flexible. It takes care of many use cases; allowing developers to do all sorts of optimisation. However, this flexibility comes at a cost of DX (developer experience) as illustrated previously how a presumably simple operation requires 4 unintuitive steps.
 
-Firecracker aims to improve the developer experience by exposing a very intuitive and relatively simple API (merely 3 classes). It hides some of the complexity from the Firestore API, allowing developers to focus on the data. Hoever this also loses some of the flexibility that the original Firestore API provides.
+Firecracker aims to improve the developer experience by exposing a very intuitive and relatively simple API (merely 3 classes). It hides most of the complexity from the Firestore API, allowing developers to focus on the data. Hoever this also sacrifices some of the flexibility the original Firestore API provides.
 
 Conceptually, retriving a document from a collection should be as simple as `Collection -> Document`. This is exactly what you will do with Firecracker:
 
