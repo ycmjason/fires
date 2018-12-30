@@ -94,55 +94,122 @@ describe('FirecrackerCollection', () => {
     })).toEqual(['doc1', 'doc2']);
   });
 
-  describe('firecrackerCollection.subscribe(queryObj, onNext, onError)', () => {
-    it('should call onNext', async done => {
+  describe('firecrackerCollection.subscribe', () => {
+    let $mockCollection;
+    let $mockQuery;
+    beforeEach(() => {
       when(transformQuerySnapshot)
         .calledWith('$mockQuerySnapshot')
         .mockResolvedValue(['doc1', 'doc2']);
 
-      const $mockQuery = { onSnapshot: jest.fn() };
-      $mockQuery.onSnapshot.mockImplementation((options, onNext, onError) => {
-        onNext('$mockQuerySnapshot');
-      });
+      $mockQuery = { onSnapshot: jest.fn() };
 
-      const $mockCollection = { where: jest.fn() };
+      $mockCollection = { where: jest.fn(), onSnapshot: jest.fn() };
       when($mockCollection.where)
         .calledWith('country', '>', 'us')
         .mockReturnValue($mockQuery);
-
-      const collection = new FirecrackerCollection($mockCollection);
-      await collection.subscribe(
-        { country: ['>', 'us'] },
-        (doc) => {
-          expect(doc).toEqual(['doc1', 'doc2']);
-          done();
-        }
-      );
     });
 
-    it('should call onError', async () => {
-      const $mockQuery = { onSnapshot: jest.fn() };
-      $mockQuery.onSnapshot.mockImplementation((options, onNext, onError) => {
-        onError('$mockError');
+    describe('firecrackerCollection._subscribe', () => {
+      it('should call onNext', async done => {
+        $mockCollection.onSnapshot.mockImplementation((options, onNext, onError) => {
+          onNext('$mockQuerySnapshot');
+        });
+
+        const collection = new FirecrackerCollection($mockCollection);
+        await collection._subscribe({
+          $query: $mockCollection,
+          options: {},
+          onNext: (docs) => {
+            expect(docs).toEqual(['doc1', 'doc2']);
+            done();
+          },
+        });
       });
 
-      const $mockCollection = { where: jest.fn() };
-      when($mockCollection.where)
-        .calledWith('country', '>', 'us')
-        .mockReturnValue($mockQuery);
+      it('should call onError', async done => {
+        $mockCollection.onSnapshot.mockImplementation((options, onNext, onError) => {
+          onError('$mockError');
+        });
 
-      const collection = new FirecrackerCollection($mockCollection);
-      try {
-        await collection.subscribe(
-          { country: ['>', 'us'] },
-          (doc) => {
-            expect(doc).toEqual(['doc1', 'doc2']);
+        const collection = new FirecrackerCollection($mockCollection);
+        await collection._subscribe({
+          $query: $mockCollection,
+          options: {},
+          onError: (e) => {
+            expect(e).toBe('$mockError');
             done();
-          }
-        );
-      } catch (e) {
-        expect(e).toBe('$mockError');
-      }
+          },
+        });
+      });
+    });
+
+    describe('firecrackerCollection.subscribe(queryObj, onNext, onError)', () => {
+      it('should call _subscribe with correct options', async () => {
+        const collection = new FirecrackerCollection($mockCollection);
+        collection._subscribe = jest.fn();
+        const onNext = () => {};
+        const onError = () => {};
+
+        await collection.subscribe({ country: ['>', 'us'] }, onNext, onError);
+        expect(collection._subscribe).toHaveBeenCalledWith({
+          $query: $mockQuery,
+          options: {},
+          onNext,
+          onError,
+        });
+      });
+    });
+
+    describe('firecrackerCollection.subscribe(onNext, onError)', () => {
+      it('should call _subscribe with correct options', async () => {
+        const collection = new FirecrackerCollection($mockCollection);
+        collection._subscribe = jest.fn();
+        const onNext = () => {};
+        const onError = () => {};
+
+        await collection.subscribe(onNext, onError);
+        expect(collection._subscribe).toHaveBeenCalledWith({
+          $query: $mockCollection,
+          options: {},
+          onNext,
+          onError,
+        });
+      });
+    });
+
+    describe('firecrackerCollection.subscribeIncludingMetadata(queryObj, onNext, onError)', () => {
+      it('should call _subscribe with correct options', async () => {
+        const collection = new FirecrackerCollection($mockCollection);
+        collection._subscribe = jest.fn();
+        const onNext = () => {};
+        const onError = () => {};
+
+        await collection.subscribeIncludingMetadata({ country: ['>', 'us'] }, onNext, onError);
+        expect(collection._subscribe).toHaveBeenCalledWith({
+          $query: $mockQuery,
+          options: { includeMetadataChanges: true },
+          onNext,
+          onError,
+        });
+      });
+    });
+
+    describe('firecrackerCollection.subscribeIncludingMetadata(onNext, onError)', () => {
+      it.only('should call _subscribe with correct options', async () => {
+        const collection = new FirecrackerCollection($mockCollection);
+        collection._subscribe = jest.fn();
+        const onNext = () => {};
+        const onError = () => {};
+
+        await collection.subscribeIncludingMetadata(onNext, onError);
+        expect(collection._subscribe).toHaveBeenCalledWith({
+          $query: $mockCollection,
+          options: { includeMetadataChanges: true },
+          onNext,
+          onError,
+        });
+      });
     });
   });
 });

@@ -38,9 +38,9 @@ export default class FirecrackerCollection {
   subscribe (...args) {
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     const $query = _where(this.$collection, queryObj);
-    return _subscribe({
+    return this._subscribe({
       $query,
-      queryObj,
+      options: {},
       onNext,
       onError,
     });
@@ -49,13 +49,31 @@ export default class FirecrackerCollection {
   subscribeIncludingMetadata (...args) {
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     const $query = _where(this.$collection, queryObj);
-    return _subscribe({
+    return this._subscribe({
       $query,
-      queryObj,
       options: { includeMetadataChanges: true },
       onNext,
       onError,
     });
+  }
+
+  _subscribe ({
+    $query,
+    options,
+    onNext,
+    onError,
+  }) {
+    return $query.onSnapshot(
+      options,
+      async $querySnapshot => {
+        const docs = await transformQuerySnapshot($querySnapshot);
+        return onNext(docs);
+      },
+      err => {
+        if (!onError) throw err;
+        onError(err);
+      },
+    );
   }
 }
 
@@ -72,31 +90,11 @@ const _parseSubscribeArgs = (queryObjOrOnNext, onNextOrOnError, onError) => {
     return {
       queryObj: undefined,
       onNext: queryObjOrOnNext,
-      onError, onNextOrOnError,
+      onError: onNextOrOnError,
     };
   }
 
   throw Error('Unexpected error. Please check the arguments of subscribe or subscribeIncludingMetadata');
-};
-
-const _subscribe = ({
-  $query,
-  queryObj = {},
-  options = {},
-  onNext,
-  onError,
-}) => {
-  return $query.onSnapshot(
-    options,
-    async $querySnapshot => {
-      const docs = await transformQuerySnapshot($querySnapshot);
-      return onNext(docs);
-    },
-    err => {
-      if (!onError) throw err;
-      onError(err);
-    },
-  );
 };
 
 const _where = ($query, queryObj) => {
