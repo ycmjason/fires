@@ -5,4 +5,11 @@ export { default as FirecrackerCollection } from './FirecrackerCollection';
 export { default as FirecrackerDocument } from './FirecrackerDocument';
 export { Firecracker };
 
-export default () => new Firecracker(firestore());
+let firecrackerSingleton;
+
+export default () => {
+  if (firecrackerSingleton) return firecrackerSingleton;
+
+  firecrackerSingleton = new Firecracker(firestore());
+  return firecrackerSingleton;
+};
