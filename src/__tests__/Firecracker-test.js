@@ -1,25 +1,70 @@
+import { when } from 'jest-when';
+
 jest.mock('../FirecrackerCollection');
+import {
+  // eslint-disable-next-line no-unused-vars
+  Firecracker, FirecrackerCollection, FirecrackerDocument
+} from '..';
+
+const createMockFirestore = (base = {}) => {
+  return {
+    _config: {
+      settings: { timestampsInSnapshots: true },
+    },
+    ...base,
+  };
+};
 
 describe('Firecracker', () => {
-  it('', () => {});
-  /*
-  describe('new Firecracker(firestore)', () => {
-    it('should point this.$firestore to the correct firestore', () => {
-      const firecracker = new Firecracker(firestore);
-      expect(firecracker.$firestore).toBe(firestore);
+  describe('new Firecracker($firestore)', () => {
+    it('should keep track of the $firestore', () => {
+      const $mockFirestore = createMockFirestore({});
+
+      const firecracker = new Firecracker($mockFirestore);
+
+      expect(firecracker.$firestore).toBe($mockFirestore);
     });
   });
 
   describe('firecracker.collection(name)', () => {
     it('should return a FirecrackerCollection', () => {
-      const firecracker = new Firecracker(firestore);
+      const $mockFirestore = createMockFirestore({ collection: jest.fn() });
 
-      expect(firecracker.collection('test'))
-        .toBeInstanceOf(FirecrackerCollection);
+      when($mockFirestore.collection)
+        .calledWith('mockCollectionName')
+        .mockReturnValue('$mockCollection');
 
-      expect(FirecrackerCollection)
-        .toHaveBeenCalledWith(firestore.collection('test'));
+      FirecrackerCollection.mockImplementation(($collection) => {
+        if ($collection === '$mockCollection') {
+          return { type: 'collection' };
+        }
+        return {};
+      });
+
+      const db = new Firecracker($mockFirestore);
+      expect(db.collection('mockCollectionName')).toEqual({ type: 'collection' });
+    });
+
+    it('should return the same FirecrackerCollection on subsequent calls', () => {
+      const $mockFirestore = createMockFirestore({ collection: jest.fn() });
+
+      when($mockFirestore.collection)
+        .calledWith('mockCollectionName')
+        .mockReturnValue('$mockCollection');
+
+      FirecrackerCollection.mockImplementation(($collection) => {
+        if ($collection === '$mockCollection') {
+          return { type: 'collection' };
+        }
+        return {};
+      });
+
+      const db = new Firecracker($mockFirestore);
+      const collection1 = db.collection('mockCollectionName');
+      const collection2 = db.collection('mockCollectionName');
+      const collection3 = db.collection('mockCollectionName');
+      expect(collection1).toBe(collection2);
+      expect(collection2).toBe(collection3);
     });
   });
-  */
 });
