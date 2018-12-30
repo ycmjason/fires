@@ -16,6 +16,15 @@ const createMockFirestore = (base = {}) => {
 };
 
 describe('Firecracker', () => {
+  it('constructor should throw if Firestore did not set timestampsInSnapshots', () => {
+    const $mockFirestore = {
+      _config: {
+        settings: { timestampsInSnapshots: false },
+      },
+    };
+    expect(() => new Firecracker($mockFirestore)).toThrowErrorMatchingSnapshot();
+  });
+
   describe('firecracker.collection(name)', () => {
     it('should return a FirecrackerCollection', () => {
       const $mockFirestore = createMockFirestore({ collection: jest.fn() });
