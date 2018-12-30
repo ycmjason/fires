@@ -116,6 +116,9 @@ const _parseQueryObj = (queryObj = {}) => {
       if (['<', '<=', '==', '>', '>=', 'array-contains'].includes(operator)) {
         const [operator, value] = query;
         return [[field, operator, value]];
+      } else if (operator === '!=') {
+        const value = query[1];
+        return [[field, '<', value], [field, '>', value]];
       } else if (/^range[[(][)\]]$/.test(operator)) {
         const [operator, start, end] = query;
         const inclusiveStart = /^range\[/.test(operator);

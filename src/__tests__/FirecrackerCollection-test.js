@@ -73,24 +73,39 @@ describe('FirecrackerCollection', () => {
   });
 
   it ('firecrackerCollection.find(queryObj)', async () => {
-    const $mockCollection = { where: jest.fn() };
     const $mockQuery = {
+      where: jest.fn(),
       get: jest.fn().mockResolvedValue({
         docs: ['$doc1', '$doc2'],
       }),
     };
 
-    when($mockCollection.where)
-      .calledWith('country', '==', 'us')
-      .mockReturnValue($mockQuery);
+    [
+      ['country', '==', 'us'],
+      ['age', '>=', 30],
+      ['age', '<', 60],
+      ['gender', '<', 'male'],
+      ['gender', '>', 'male'],
+      ['mother.age', '>', 20],
+      ['mother.age', '<', 80],
+    ].forEach(([field, operator, value]) => {
+      when($mockQuery.where)
+        .calledWith(field, operator, value)
+        .mockReturnValue($mockQuery);
+    });
 
     when(executeQuery)
       .calledWith($mockQuery)
       .mockResolvedValue(['doc1', 'doc2']);
 
-    const collection = new FirecrackerCollection($mockCollection);
+    const collection = new FirecrackerCollection($mockQuery);
     expect(await collection.find({
       country: 'us',
+      gender: ['!=', 'male'],
+      age: ['range[)', 30, 60],
+      mother: {
+        age: ['range()', 20, 80],
+      },
     })).toEqual(['doc1', 'doc2']);
   });
 
