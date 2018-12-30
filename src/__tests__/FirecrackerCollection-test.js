@@ -196,7 +196,7 @@ describe('FirecrackerCollection', () => {
     });
 
     describe('firecrackerCollection.subscribeIncludingMetadata(onNext, onError)', () => {
-      it.only('should call _subscribe with correct options', async () => {
+      it('should call _subscribe with correct options', async () => {
         const collection = new FirecrackerCollection($mockCollection);
         collection._subscribe = jest.fn();
         const onNext = () => {};
