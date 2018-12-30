@@ -1,4 +1,4 @@
-import firebase from 'firebase';
+import { firestore } from 'firebase';
 import {
   transformDocumentRef,
   transformDocumentSnapshot,
@@ -10,15 +10,14 @@ export default class FirecrackerDocument {
     this.$id = $ref.id;
     this.$ref = $ref;
     this.$metadata = $metadata;
-    Object.freeze(this);
   }
 
   static async from ($obj) {
-    if ($obj instanceof firebase.firestore.DocumentReference) {
+    if ($obj instanceof firestore.DocumentReference) {
       return await transformDocumentRef($obj);
     }
 
-    if ($obj instanceof firebase.firestore.DocumentSnapshot) {
+    if ($obj instanceof firestore.DocumentSnapshot) {
       return await transformDocumentSnapshot($obj);
     }
 
@@ -28,7 +27,7 @@ export default class FirecrackerDocument {
   // Update
   async update (data) {
     await this.$ref.update(data);
-    return FirecrackerDocument.from(this.$ref);
+    return await FirecrackerDocument.from(this.$ref);
   }
 
   // Delete
@@ -39,39 +38,35 @@ export default class FirecrackerDocument {
 
   // SUBSCRIBE
   subscribe (onNext, onError) {
-    return _subscribe({
-      $documentRef: this.$ref,
+    return this._subscribe({
+      $ref: this.$ref,
+      options: {},
       onNext,
       onError,
     });
   }
 
   subscribeIncludingMetadata (onNext, onError) {
-    return _subscribe({
-      $documentRef: this.$ref,
+    return this._subscribe({
+      $ref: this.$ref,
       options: { includeMetadataChanges: true },
       onNext,
       onError,
     });
   }
+
+  _subscribe ({ $ref, options, onNext, onError }) {
+    return $ref.onSnapshot(
+      options,
+      async $documentSnapshot => {
+        if (!onNext) return;
+        const doc = await transformDocumentSnapshot($documentSnapshot);
+        return onNext(doc);
+      },
+      err => {
+        if (!onError) throw err;
+        onError(err);
+      },
+    );
+  }
 }
-
-
-const _subscribe = ({
-  $documentRef,
-  options = {},
-  onNext,
-  onError,
-}) => {
-  return $documentRef.onSnapshot(
-    options,
-    async $documentSnapshot => {
-      const docs = await transformDocumentSnapshot($documentSnapshot);
-      return onNext(docs);
-    },
-    err => {
-      if (!onError) throw err;
-      onError(err);
-    },
-  );
-};
