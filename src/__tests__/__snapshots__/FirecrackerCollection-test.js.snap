@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FirecrackerCollection firecrackerCollection.createWithId(doc) should throw if id already exists 1`] = `[Error: col.the id already exists]`;

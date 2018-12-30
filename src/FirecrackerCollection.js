@@ -13,7 +13,15 @@ export default class FirecrackerCollection {
   }
 
   async createWithId (id, doc) {
+    const { $collection } = this;
     const $docRef = this.$collection.doc(id);
+
+    // check if exists
+    const $docSnapshot = await $docRef.get();
+    if ($docSnapshot.exists) {
+      throw Error(`${$collection.id}.${id} already exists`);
+    }
+
     await $docRef.set(doc);
     return await FirecrackerDocument.from($docRef);
   }

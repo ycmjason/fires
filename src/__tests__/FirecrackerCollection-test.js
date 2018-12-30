@@ -26,23 +26,41 @@ describe('FirecrackerCollection', () => {
     expect(await collection.create({ a: 3 })).toBe('yoyo');
   });
 
-  it('firecrackerCollection.createWithId(doc)', async () => {
-    const $mockCollection = { doc: jest.fn() };
+  describe('firecrackerCollection.createWithId(doc)', () => {
+    it('should create document at id', async () => {
+      const $mockCollection = { doc: jest.fn() };
 
-    const $mockDocRef = { set: jest.fn() };
+      const $mockDocRef = { set: jest.fn(), get: () => ({ exists: false }) };
 
-    when($mockCollection.doc)
-      .calledWith('the id')
-      .mockReturnValue($mockDocRef);
+      when($mockCollection.doc)
+        .calledWith('the id')
+        .mockReturnValue($mockDocRef);
 
-    when(FirecrackerDocument.from)
-      .calledWith($mockDocRef)
-      .mockResolvedValue('yoyo');
+      when(FirecrackerDocument.from)
+        .calledWith($mockDocRef)
+        .mockResolvedValue('yoyo');
 
-    const collection = new FirecrackerCollection($mockCollection);
+      const collection = new FirecrackerCollection($mockCollection);
 
-    expect(await collection.createWithId('the id', { a: 3 })).toBe('yoyo');
-    expect($mockDocRef.set).toHaveBeenCalledWith({ a: 3 });
+      expect(await collection.createWithId('the id', { a: 3 })).toBe('yoyo');
+      expect($mockDocRef.set).toHaveBeenCalledWith({ a: 3 });
+    });
+
+    it('should throw if id already exists', async () => {
+      const $mockDocSnapshot = { exists: true };
+
+      const $mockDocRef = { get: jest.fn() };
+      $mockDocRef.get.mockResolvedValue($mockDocSnapshot);
+
+      const $mockCollection = { id: 'col', doc: jest.fn() };
+      when($mockCollection.doc)
+        .calledWith('the id')
+        .mockReturnValue($mockDocRef);
+
+      const collection = new FirecrackerCollection($mockCollection);
+
+      await expect(collection.createWithId('the id', { a: 3 })).rejects.toMatchSnapshot();
+    });
   });
 
   it('firecrackerCollection.findById(id)', async () => {
