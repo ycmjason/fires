@@ -94,28 +94,55 @@ describe('FirecrackerCollection', () => {
     })).toEqual(['doc1', 'doc2']);
   });
 
-  it ('firecrackerCollection.subscribe(queryObj, onNext, onError)', async done => {
-    when(transformQuerySnapshot)
-      .calledWith('$mockQuerySnapshot')
-      .mockResolvedValue(['doc1', 'doc2']);
+  describe('firecrackerCollection.subscribe(queryObj, onNext, onError)', () => {
+    it('should call onNext', async done => {
+      when(transformQuerySnapshot)
+        .calledWith('$mockQuerySnapshot')
+        .mockResolvedValue(['doc1', 'doc2']);
 
-    const $mockQuery = { onSnapshot: jest.fn() };
-    $mockQuery.onSnapshot.mockImplementation((options, onNext, onError) => {
-      onNext('$mockQuerySnapshot');
+      const $mockQuery = { onSnapshot: jest.fn() };
+      $mockQuery.onSnapshot.mockImplementation((options, onNext, onError) => {
+        onNext('$mockQuerySnapshot');
+      });
+
+      const $mockCollection = { where: jest.fn() };
+      when($mockCollection.where)
+        .calledWith('country', '>', 'us')
+        .mockReturnValue($mockQuery);
+
+      const collection = new FirecrackerCollection($mockCollection);
+      await collection.subscribe(
+        { country: ['>', 'us'] },
+        (doc) => {
+          expect(doc).toEqual(['doc1', 'doc2']);
+          done();
+        }
+      );
     });
 
-    const $mockCollection = { where: jest.fn() };
-    when($mockCollection.where)
-      .calledWith('country', '>', 'us')
-      .mockReturnValue($mockQuery);
+    it('should call onError', async () => {
+      const $mockQuery = { onSnapshot: jest.fn() };
+      $mockQuery.onSnapshot.mockImplementation((options, onNext, onError) => {
+        onError('$mockError');
+      });
 
-    const collection = new FirecrackerCollection($mockCollection);
-    await collection.subscribe(
-      { country: ['>', 'us'] },
-      (doc) => {
-        expect(doc).toEqual(['doc1', 'doc2']);
-        done();
+      const $mockCollection = { where: jest.fn() };
+      when($mockCollection.where)
+        .calledWith('country', '>', 'us')
+        .mockReturnValue($mockQuery);
+
+      const collection = new FirecrackerCollection($mockCollection);
+      try {
+        await collection.subscribe(
+          { country: ['>', 'us'] },
+          (doc) => {
+            expect(doc).toEqual(['doc1', 'doc2']);
+            done();
+          }
+        );
+      } catch (e) {
+        expect(e).toBe('$mockError');
       }
-    );
+    });
   });
 });
