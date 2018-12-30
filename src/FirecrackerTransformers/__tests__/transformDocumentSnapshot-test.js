@@ -33,11 +33,8 @@ describe('transformDocumentSnapshot', () => {
       .toEqual({ type: 'document' });
   });
 
-  it('should return null if the $docData is empty', async () => {
-    const $mockDocSnapshot = {
-      ref: '$documentRef',
-      data: jest.fn().mockReturnValue(undefined),
-    };
+  it('should return null if the $docSnapshot does not exists', async () => {
+    const $mockDocSnapshot = { exists: false };
 
     expect(await transformDocumentSnapshot($mockDocSnapshot))
       .toEqual(null);

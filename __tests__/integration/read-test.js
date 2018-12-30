@@ -32,6 +32,12 @@ describe('Integration - Read', () => {
       expect(doc).toBeInstanceOf(FirecrackerDocument);
       expect(doc.yo).toBe(false);
     });
+
+    it('should return null if id does not exist', async () => {
+      const doc = await db.collection(COLLECTION_NAME).findById('someId');
+
+      expect(doc).toBe(null);
+    });
   });
 
   describe('FirecrackerCollection.findAll', () => {

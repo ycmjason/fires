@@ -63,7 +63,7 @@ describe('FirecrackerCollection', () => {
     });
   });
 
-  it('firecrackerCollection.findById(id)', async () => {
+  describe('firecrackerCollection.findById(id)', async () => {
     const $mockCollection = { doc: jest.fn() };
 
     when($mockCollection.doc)
@@ -72,11 +72,11 @@ describe('FirecrackerCollection', () => {
 
     when(FirecrackerDocument.from)
       .calledWith('the ref')
-      .mockResolvedValue('yoyo');
+      .mockResolvedValue('doc');
 
     const collection = new FirecrackerCollection($mockCollection);
 
-    expect(await collection.findById('id')).toBe('yoyo');
+    expect(await collection.findById('id')).toBe('doc');
   });
 
   it ('firecrackerCollection.findAll()', async () => {
