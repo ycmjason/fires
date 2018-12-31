@@ -4,6 +4,8 @@
   "description": "Firestore simplified. Fires is a well-tested wrapper for Firestore. Aiming to make Firestore even more accessible.",
   "main": "src/index.js",
   "scripts": {
+    "preversion": "$EDITOR CHANGELOG.md",
+    "version": "git add -A",
     "test": "jest"
   },
   "keywords": [
