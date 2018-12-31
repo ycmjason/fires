@@ -2,10 +2,10 @@ import { firestore } from 'firebase';
 import {
   transformDocumentRef,
   transformDocumentSnapshot,
-} from './FirecrackerTransformers';
+} from './transformers';
 import { mapValues } from './utils';
 
-export default class FirecrackerDocument {
+export default class FiresDocument {
   constructor ({ $ref, $metadata, data }) {
     _setReadOnly(this, {
       ...data,
@@ -24,13 +24,13 @@ export default class FirecrackerDocument {
       return await transformDocumentSnapshot($obj);
     }
 
-    throw Error(`Firecracker.from panic: Unsure how to resolve ${$obj}.`);
+    throw Error(`Fires.from panic: Unsure how to resolve ${$obj}.`);
   }
 
   // Update
   async update (data) {
     await this.$ref.update(data);
-    return await FirecrackerDocument.from(this.$ref);
+    return await FiresDocument.from(this.$ref);
   }
 
   // Delete

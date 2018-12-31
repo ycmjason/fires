@@ -1,7 +1,7 @@
 import { firestore, clearCollection } from '../helpers/firebase.js';
-import firecracker, {
+import fires, {
   // eslint-disable-next-line no-unused-vars
-  Firecracker, FirecrackerCollection, FirecrackerDocument
+  Fires, FiresCollection, FiresDocument
 } from '../..';
 
 const createStreamCB = () => {
@@ -30,7 +30,7 @@ describe('Integration - Subscribe', () => {
   const addCleanUp = fn => cleanUps.push(fn);
 
   beforeAll(() => {
-    db = firecracker();
+    db = fires();
   });
 
   let collectionName;
@@ -49,7 +49,7 @@ describe('Integration - Subscribe', () => {
     await clearCollection($collection);
   });
 
-  describe('FirecrackerCollection.subscribe', () => {
+  describe('FiresCollection.subscribe', () => {
     it('should listen to document events', async done => {
       const $docRef = await $collection.add({ a: 3 });
 
@@ -118,7 +118,7 @@ describe('Integration - Subscribe', () => {
     });
   });
 
-  describe('FirecrackerDocument.subscribe', () => {
+  describe('FiresDocument.subscribe', () => {
     it('should listen to document events', async done => {
       const $docRef = await $collection.add({ a: 3 });
       const document = await db.collection(collectionName).findById($docRef.id);
@@ -127,12 +127,12 @@ describe('Integration - Subscribe', () => {
         document.subscribe(
           createStreamCB()
             .next(async doc => {
-              expect(doc).toBeInstanceOf(FirecrackerDocument);
+              expect(doc).toBeInstanceOf(FiresDocument);
               expect(doc).toMatchObject({ a: 3 });
               await $docRef.set({ a: 10 });
             })
             .next(async doc => {
-              expect(doc).toBeInstanceOf(FirecrackerDocument);
+              expect(doc).toBeInstanceOf(FiresDocument);
               expect(doc).toMatchObject({ a: 10 });
               await $docRef.delete();
             })

@@ -1,7 +1,8 @@
-# Firecracker
 
-[![Build Status](https://travis-ci.com/ycmjason/firecracker.svg?branch=master)](https://travis-ci.com/ycmjason/firecracker)
-[![codecov](https://codecov.io/gh/ycmjason/firecracker/branch/master/graph/badge.svg)](https://codecov.io/gh/ycmjason/firecracker)
+# Fires
+
+[![Build Status](https://travis-ci.com/ycmjason/fires.svg?branch=master)](https://travis-ci.com/ycmjason/fires)
+[![codecov](https://codecov.io/gh/ycmjason/fires/branch/master/graph/badge.svg)](https://codecov.io/gh/ycmjason/fires)
 
 Firestore simplified.
 
@@ -30,15 +31,16 @@ As illustrated above, in order to retrieve a single document, 4 unintuitive step
 
 Firestore API is highly flexible. It takes care of many use cases; allowing developers to do all sorts of optimisation. However, this flexibility comes at a cost of DX (developer experience) as illustrated previously how a presumably simple operation requires 4 unintuitive steps.
 
-Firecracker aims to improve the developer experience by exposing a very intuitive and relatively simple API (merely 3 classes). It hides most of the complexity from the Firestore API, allowing developers to focus on the data. Hoever this also sacrifices some of the flexibility the original Firestore API provides.
+Fires aims to improve the developer experience by exposing a very intuitive and relatively simple API (merely 3 classes). It hides most of the complexity from the Firestore API, allowing developers to focus on the data. Hoever this also sacrifices some of the flexibility the original Firestore API provides.
 
-Conceptually, retriving a document from a collection should be as simple as `Collection -> Document`. This is exactly what you will do with Firecracker:
+Conceptually, retriving a document from a collection should be as simple as `Collection -> Document`. This is exactly what you will do with Fires:
 
 ```js
-const db = firecracker();
+const db = fires();
 const collection = db.collection('cities');
 const doc = await collection.findById('LA');
 /* {
+ * .   $id: "...",
  *     name: "Los Angeles",
  *     state: "CA",
  *     country: "USA"
@@ -51,30 +53,18 @@ For a more detailed API documentation, please see below.
 ## Install
 
 ```
-npm i @ycm.jason/firecracker
+npm i fires
 ```
 
-## API Documentation
+## Usage Overview
 
-There are *3 and only 3* classes in Firecracker.
-1. `Firecracker`
-2. `FirecrackerCollection`
-3. `FirecrackerDocument`
-
-### 1. Firecracker
-
-#### firecracker(): Firecracker
-
-This method returns a `Firecracker` instance representing the database (`db`). You will need to import the `firebase/firestore` module yourself. It is also required to set `timestampsInSnapshots` to `true`. All subsequent calls will return the same instance of `Firecracker`.
-
-Example:
+The following example will demonstrate basic CRUD operations with Fires.
 
 ```js
-// Initialise Firebase
 import firebase from 'firebase';
 import 'firebase/firestore';
 
-import firecracker from '@ycm.jason/firecracker';
+import fires from 'fires';
 
 // Initialise firebase
 firebase.initializeApp({
@@ -84,50 +74,118 @@ firebase.initializeApp({
 });
 
 // Disable deprecated features
-firebase.firestore().settings({
-  timestampsInSnapshots: true
+firebase.firestore().settings({ timestampsInSnapshots: true });
+
+const db = fires();
+const people = db.collection('people');
+
+// Create
+let peter = await people.create({
+  name: 'Peter',
+  age: 30,
+});
+// peter: { $id: "...", name: "Peter", age: 30 }
+
+// Read
+const adults = await people.find({
+  age: ['>=', 18],
+});
+// adults: [ { $id: "...", name: "Peter", age: 30 }, ... ]
+
+// Update
+peter = await peter.update({ age: 40 });
+// peter: { $id: "...", name: "Peter", age: 40 }
+
+// Delete
+await peter.delete();
+
+// Subscribe
+people.subscribe(ppl => {
+  // ppl: [ { $id: "...", name: "Mary", age: 10 }, ... ]
+}, err => {
+  // ...
 });
 
-const db = firecracker();
-
-firecracker() === firecracker(); // true
+people.subscribe({
+  age: ['<', 18],
+}, children => {
+  // children: [ { $id: "...", name: "Mary", age: 10 }, ... ]
+}, err => {
+  // ...
+});
 ```
 
-#### db.collection(collectionName: String): FirecrackerCollection
+## API Documentation
+
+There are *3 and only 3* classes in Fires.
+1. `Fires`
+2. `FiresCollection`
+3. `FiresDocument`
+
+### 1. Fires
+
+#### fires(): Fires
+
+This method returns a `Fires` instance representing the database (`db`). You will need to import the `firebase/firestore` module yourself. It is also required to set `timestampsInSnapshots` to `true`. All subsequent calls will return the same instance of `Fires`.
+
+Example:
+
+```js
+import firebase from 'firebase';
+import 'firebase/firestore';
+
+import fires from '@ycm.jason/fires';
+
+// Initialise firebase
+firebase.initializeApp({
+  apiKey: '### FIREBASE API KEY ###',
+  authDomain: '### FIREBASE AUTH DOMAIN ###',
+  projectId: '### CLOUD FIRESTORE PROJECT ID ###'
+});
+
+// Disable deprecated features
+firebase.firestore().settings({ timestampsInSnapshots: true });
+
+const db = fires();
+
+fires() === fires(); // true
+```
+
+#### db.collection(collectionName: String): FiresCollection
 
 This methods returns the collection with the `collectionName`. Subsequent calls with the same `collectionName` will return the same instance.
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const collection = db.collection('countries');
 ```
 
-### 2. FirecrackerCollection
+### 2. FiresCollection
 
-#### collection.create(data: Object): Promise\<FirecrackerDocument\>
+#### collection.create(data: Object): Promise\<FiresDocument\>
 
 This method creates a new entry in the collection with the given `data` and returns a `Promise` that resolves to the document after it has been written to the backend.
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const countries = db.collection('countries');
 const hongKong = await countries.create({
   name: 'Hong Kong',
 });
 ```
 
-#### collection.createWithId(id: String, data: Object): Promise\<FirecrackerDocument\>
+#### collection.createWithId(id: String, data: Object): Promise\<FiresDocument\>
 
 This method is the same as `collection.create` except it creates a new entry in the collection with the given `id`. If a document with the same `id` already existed, this function will throw an error.
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const countries = db.collection('countries');
 try {
   const hk = await countries.createWithId('HK', {
@@ -138,14 +196,14 @@ try {
 }
 ```
 
-#### collection.findById(id: String): Promise\<FirecrackerDocument or null\>
+#### collection.findById(id: String): Promise\<FiresDocument or null\>
 
 This method returns a `Promise` that resolves to the document with `id` in `collection` if it exists, `null` otherwise.
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const countries = db.collection('countries');
 const hk = await countries.findById('HK');
 if (hk === null) {
@@ -153,31 +211,31 @@ if (hk === null) {
 }
 ```
 
-#### collection.findAll(): Promise\<[FirecrackerDocument]\>
+#### collection.findAll(): Promise\<[FiresDocument]\>
 
 This method returns a `Promise` that resolves to all documents in the `collection`. This is essentially equivalent to `collection.find({})`.
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const countriesCollection = db.collection('countries');
 const countries = await countriesCollection.findAll();
 ```
 
-#### collection.find(queryObj: Object): Promise\<[FirecrackerDocument]\>
+#### collection.find(queryObj: Object): Promise\<[FiresDocument]\>
 
 This method returns a `Promise` that resolves to all documents in the `collection` with each document meeting the criteria specified by the `queryObj`. 
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const users = db.collection('users');
 const specialUsers = await users.find({
   country: 'us', // equivilant to ['==', 'us']
   age: ['range[)', 21, 30], // denotes 21 <= age < 30
-  friends: ['array-contains', firecrackerDocument],
+  friends: ['array-contains', firesDocument],
   thirdParty: { // nested query is supported, you can also speify 'thirdParty.facebook' if you wish
     facebook: true, // equivilant to ['==', true]
   },
@@ -196,7 +254,7 @@ There are 3 types of queries:
 
 All operators supported in [firestore query](https://firebase.google.com/docs/firestore/query-data/queries) are also supported, i.e. `<`, `<=`, `==`, `>`, `>=`, `array-contains`. An additional operator `!=` can also be used which means "not equals".
 
-In addition to the firestore operators, firecracker also support a set of "range" operators:
+In addition to the firestore operators, fires also support a set of "range" operators:
 - `range[]` - inclusive range, e.g. `{ age: ['range[]', 20, 50] }` denotes `20 <= age <= 50`
 - `range()` - exclusive range, e.g. `{state: ['range()', 'CA', 'IN'] }` denotes `'CA' < state < 'IN'`
 - `range[)` - inclusive start; exclusive end, e.g. `{ year: ['range[)', 1995, 2018] }` denotes `1995 <= year < 2018`
@@ -220,11 +278,11 @@ If `queryObj` is provided, it only subscribes to documents meeting the criteria.
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const users = db.collection('users');
 const unsubscribe = users.subscribe(
   allUsers => {
-    // allUsers: [FirecrackerDocument]
+    // allUsers: [FiresDocument]
   },
   err => {
     // optional: handle error
@@ -235,7 +293,7 @@ const unsubscribe = users.subscribe(
 users.subscribe(
   { country: 'us' }
   usUsers => {
-    // usUsers: [FirecrackerDocument]
+    // usUsers: [FiresDocument]
   },
   err => {
     // optional: handle error
@@ -247,16 +305,16 @@ users.subscribe(
 
 This method works the same as `collection.subscribe` except they also subscribes to metadata changes. This essentially set `includeMetadataChanges` to `true`. See [here](https://firebase.google.com/docs/reference/js/firebase.firestore.SnapshotListenOptions) for more information.
 
-### 3. FirecrackerDocument
+### 3. FiresDocument
 
-#### doc.update(data: Object): Promise\<FirecrackerDocument\>
+#### doc.update(data: Object): Promise\<FiresDocument\>
 
 This method updates specific fields in a document returning a `Promise` which resolves to a new document after writing to the backend.
 
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const cars = db.collection('cars');
 const tesla = await cars.findById('tesla'); // { color: 'black', type: 'electric' }
 const newTesla = await tesla.update({ color: 'red' }); // { color: 'red', type: 'electric' }
@@ -269,7 +327,7 @@ This methods removes the document from the collection.
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const cars = db.collection('cars');
 const tesla = await cars.findById('tesla');
 await tesla.delete();
@@ -282,12 +340,12 @@ Same as `collection.subscribe` except `onNext` receives a single document instea
 Example:
 
 ```js
-const db = firecracker();
+const db = fires();
 const animals = db.collection('animals');
 const lion = await cars.findById('lion');
 await lion.subscribe(
   nextLion => {
-    // nextLion: FirecrackerDocument
+    // nextLion: FiresDocument
   },
 );
 ```
@@ -296,4 +354,4 @@ await lion.subscribe(
 This method works the same as `doc.subscribe` except they also subscribes to metadata changes. This essentially set `includeMetadataChanges` to `true`. See [here](https://firebase.google.com/docs/reference/js/firebase.firestore.SnapshotListenOptions) for more information.
 
 ## Author
-Jason Yu
+Jason Yu<Paste>

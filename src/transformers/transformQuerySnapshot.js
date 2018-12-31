@@ -1,8 +1,8 @@
-import FirecrackerDocument from '../FirecrackerDocument';
+import FiresDocument from '../FiresDocument';
 
 export default async $querySnapshot => {
   const docs = await Promise.all(
-    $querySnapshot.docs.map(FirecrackerDocument.from)
+    $querySnapshot.docs.map(FiresDocument.from)
   );
 
   docs.$metadata = $querySnapshot.metadata;

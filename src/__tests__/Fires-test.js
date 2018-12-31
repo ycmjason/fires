@@ -1,9 +1,9 @@
 import { when } from 'jest-when';
 
-jest.mock('../FirecrackerCollection');
+jest.mock('../FiresCollection');
 import {
   // eslint-disable-next-line no-unused-vars
-  Firecracker, FirecrackerCollection, FirecrackerDocument
+  Fires, FiresCollection, FiresDocument
 } from '..';
 
 const createMockFirestore = (base = {}) => {
@@ -15,50 +15,50 @@ const createMockFirestore = (base = {}) => {
   };
 };
 
-describe('Firecracker', () => {
+describe('Fires', () => {
   it('constructor should throw if Firestore did not set timestampsInSnapshots', () => {
     const $mockFirestore = {
       _config: {
         settings: { timestampsInSnapshots: false },
       },
     };
-    expect(() => new Firecracker($mockFirestore)).toThrowErrorMatchingSnapshot();
+    expect(() => new Fires($mockFirestore)).toThrowErrorMatchingSnapshot();
   });
 
-  describe('firecracker.collection(name)', () => {
-    it('should return a FirecrackerCollection', () => {
+  describe('fires.collection(name)', () => {
+    it('should return a FiresCollection', () => {
       const $mockFirestore = createMockFirestore({ collection: jest.fn() });
 
       when($mockFirestore.collection)
         .calledWith('mockCollectionName')
         .mockReturnValue('$mockCollection');
 
-      FirecrackerCollection.mockImplementation(($collection) => {
+      FiresCollection.mockImplementation(($collection) => {
         if ($collection === '$mockCollection') {
           return { type: 'collection' };
         }
         return {};
       });
 
-      const db = new Firecracker($mockFirestore);
+      const db = new Fires($mockFirestore);
       expect(db.collection('mockCollectionName')).toEqual({ type: 'collection' });
     });
 
-    it('should return the same FirecrackerCollection on subsequent calls', () => {
+    it('should return the same FiresCollection on subsequent calls', () => {
       const $mockFirestore = createMockFirestore({ collection: jest.fn() });
 
       when($mockFirestore.collection)
         .calledWith('mockCollectionName')
         .mockReturnValue('$mockCollection');
 
-      FirecrackerCollection.mockImplementation(($collection) => {
+      FiresCollection.mockImplementation(($collection) => {
         if ($collection === '$mockCollection') {
           return { type: 'collection' };
         }
         return {};
       });
 
-      const db = new Firecracker($mockFirestore);
+      const db = new Fires($mockFirestore);
       const collection1 = db.collection('mockCollectionName');
       const collection2 = db.collection('mockCollectionName');
       const collection3 = db.collection('mockCollectionName');

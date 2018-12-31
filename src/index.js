@@ -1,15 +1,15 @@
 import { firestore } from 'firebase';
-import Firecracker from './Firecracker';
+import Fires from './Fires';
 
-export { default as FirecrackerCollection } from './FirecrackerCollection';
-export { default as FirecrackerDocument } from './FirecrackerDocument';
-export { Firecracker };
+export { default as FiresCollection } from './FiresCollection';
+export { default as FiresDocument } from './FiresDocument';
+export { Fires };
 
-let firecrackerSingleton;
+let firesSingleton;
 
 export default () => {
-  if (firecrackerSingleton) return firecrackerSingleton;
+  if (firesSingleton) return firesSingleton;
 
-  firecrackerSingleton = new Firecracker(firestore());
-  return firecrackerSingleton;
+  firesSingleton = new Fires(firestore());
+  return firesSingleton;
 };

@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Fires constructor should throw if Firestore did not set timestampsInSnapshots 1`] = `"Fires: Firestore must set \`timestampsInSnapshots\` to \`true\`. Please add this line before initiating Fires \`firebase.firestore().settings({ timestampsInSnapshots: true });\`"`;

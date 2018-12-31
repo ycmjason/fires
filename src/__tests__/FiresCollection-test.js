@@ -1,32 +1,32 @@
-jest.mock('../FirecrackerDocument');
-import { FirecrackerCollection, FirecrackerDocument } from '..';
+jest.mock('../FiresDocument');
+import { FiresCollection, FiresDocument } from '..';
 
-jest.mock('../FirecrackerTransformers/executeQuery');
-import executeQuery from '../FirecrackerTransformers/executeQuery';
+jest.mock('../transformers/executeQuery');
+import executeQuery from '../transformers/executeQuery';
 
-jest.mock('../FirecrackerTransformers/transformQuerySnapshot');
-import transformQuerySnapshot from '../FirecrackerTransformers/transformQuerySnapshot';
+jest.mock('../transformers/transformQuerySnapshot');
+import transformQuerySnapshot from '../transformers/transformQuerySnapshot';
 
 import { when } from 'jest-when';
 
-describe('FirecrackerCollection', () => {
-  it('firecrackerCollection.create(doc)', async () => {
+describe('FiresCollection', () => {
+  it('firesCollection.create(doc)', async () => {
     const $mockCollection = { add: jest.fn() };
 
     when($mockCollection.add)
       .calledWith({ a: 3 })
       .mockReturnValue('the ref');
 
-    when(FirecrackerDocument.from)
+    when(FiresDocument.from)
       .calledWith('the ref')
       .mockResolvedValue('yoyo');
 
-    const collection = new FirecrackerCollection($mockCollection);
+    const collection = new FiresCollection($mockCollection);
 
     expect(await collection.create({ a: 3 })).toBe('yoyo');
   });
 
-  describe('firecrackerCollection.createWithId(doc)', () => {
+  describe('firesCollection.createWithId(doc)', () => {
     it('should create document at id', async () => {
       const $mockCollection = { doc: jest.fn() };
 
@@ -36,11 +36,11 @@ describe('FirecrackerCollection', () => {
         .calledWith('the id')
         .mockReturnValue($mockDocRef);
 
-      when(FirecrackerDocument.from)
+      when(FiresDocument.from)
         .calledWith($mockDocRef)
         .mockResolvedValue('yoyo');
 
-      const collection = new FirecrackerCollection($mockCollection);
+      const collection = new FiresCollection($mockCollection);
 
       expect(await collection.createWithId('the id', { a: 3 })).toBe('yoyo');
       expect($mockDocRef.set).toHaveBeenCalledWith({ a: 3 });
@@ -57,40 +57,40 @@ describe('FirecrackerCollection', () => {
         .calledWith('the id')
         .mockReturnValue($mockDocRef);
 
-      const collection = new FirecrackerCollection($mockCollection);
+      const collection = new FiresCollection($mockCollection);
 
       await expect(collection.createWithId('the id', { a: 3 })).rejects.toMatchSnapshot();
     });
   });
 
-  describe('firecrackerCollection.findById(id)', async () => {
+  describe('firesCollection.findById(id)', async () => {
     const $mockCollection = { doc: jest.fn() };
 
     when($mockCollection.doc)
       .calledWith('id')
       .mockReturnValue('the ref');
 
-    when(FirecrackerDocument.from)
+    when(FiresDocument.from)
       .calledWith('the ref')
       .mockResolvedValue('doc');
 
-    const collection = new FirecrackerCollection($mockCollection);
+    const collection = new FiresCollection($mockCollection);
 
     expect(await collection.findById('id')).toBe('doc');
   });
 
-  it ('firecrackerCollection.findAll()', async () => {
+  it ('firesCollection.findAll()', async () => {
     const $mockCollection = '$mockCollection';
 
     when(executeQuery)
       .calledWith($mockCollection)
       .mockResolvedValue(['doc1', 'doc2']);
 
-    const collection = new FirecrackerCollection($mockCollection);
+    const collection = new FiresCollection($mockCollection);
     expect(await collection.findAll()).toEqual(['doc1', 'doc2']);
   });
 
-  it ('firecrackerCollection.find(queryObj)', async () => {
+  it ('firesCollection.find(queryObj)', async () => {
     const $mockQuery = {
       where: jest.fn(),
       get: jest.fn().mockResolvedValue({
@@ -116,7 +116,7 @@ describe('FirecrackerCollection', () => {
       .calledWith($mockQuery)
       .mockResolvedValue(['doc1', 'doc2']);
 
-    const collection = new FirecrackerCollection($mockQuery);
+    const collection = new FiresCollection($mockQuery);
     expect(await collection.find({
       country: 'us',
       gender: ['!=', 'male'],
@@ -127,7 +127,7 @@ describe('FirecrackerCollection', () => {
     })).toEqual(['doc1', 'doc2']);
   });
 
-  describe('firecrackerCollection.subscribe', () => {
+  describe('firesCollection.subscribe', () => {
     let $mockCollection;
     let $mockQuery;
     beforeEach(() => {
@@ -143,13 +143,13 @@ describe('FirecrackerCollection', () => {
         .mockReturnValue($mockQuery);
     });
 
-    describe('firecrackerCollection._subscribe', () => {
+    describe('firesCollection._subscribe', () => {
       it('should call onNext', async done => {
         $mockCollection.onSnapshot.mockImplementation((options, onNext, onError) => {
           onNext('$mockQuerySnapshot');
         });
 
-        const collection = new FirecrackerCollection($mockCollection);
+        const collection = new FiresCollection($mockCollection);
         await collection._subscribe({
           $query: $mockCollection,
           options: {},
@@ -165,7 +165,7 @@ describe('FirecrackerCollection', () => {
           onError('$mockError');
         });
 
-        const collection = new FirecrackerCollection($mockCollection);
+        const collection = new FiresCollection($mockCollection);
         await collection._subscribe({
           $query: $mockCollection,
           options: {},
@@ -177,9 +177,9 @@ describe('FirecrackerCollection', () => {
       });
     });
 
-    describe('firecrackerCollection.subscribe(queryObj, onNext, onError)', () => {
+    describe('firesCollection.subscribe(queryObj, onNext, onError)', () => {
       it('should call _subscribe with correct options', async () => {
-        const collection = new FirecrackerCollection($mockCollection);
+        const collection = new FiresCollection($mockCollection);
         collection._subscribe = jest.fn();
         const onNext = () => {};
         const onError = () => {};
@@ -194,9 +194,9 @@ describe('FirecrackerCollection', () => {
       });
     });
 
-    describe('firecrackerCollection.subscribe(onNext, onError)', () => {
+    describe('firesCollection.subscribe(onNext, onError)', () => {
       it('should call _subscribe with correct options', async () => {
-        const collection = new FirecrackerCollection($mockCollection);
+        const collection = new FiresCollection($mockCollection);
         collection._subscribe = jest.fn();
         const onNext = () => {};
         const onError = () => {};
@@ -211,9 +211,9 @@ describe('FirecrackerCollection', () => {
       });
     });
 
-    describe('firecrackerCollection.subscribeIncludingMetadata(queryObj, onNext, onError)', () => {
+    describe('firesCollection.subscribeIncludingMetadata(queryObj, onNext, onError)', () => {
       it('should call _subscribe with correct options', async () => {
-        const collection = new FirecrackerCollection($mockCollection);
+        const collection = new FiresCollection($mockCollection);
         collection._subscribe = jest.fn();
         const onNext = () => {};
         const onError = () => {};
@@ -228,9 +228,9 @@ describe('FirecrackerCollection', () => {
       });
     });
 
-    describe('firecrackerCollection.subscribeIncludingMetadata(onNext, onError)', () => {
+    describe('firesCollection.subscribeIncludingMetadata(onNext, onError)', () => {
       it('should call _subscribe with correct options', async () => {
-        const collection = new FirecrackerCollection($mockCollection);
+        const collection = new FiresCollection($mockCollection);
         collection._subscribe = jest.fn();
         const onNext = () => {};
         const onError = () => {};
