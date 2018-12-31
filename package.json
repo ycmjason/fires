@@ -1,12 +1,16 @@
 {
   "name": "fires",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Firestore simplified. Fires is a well-tested wrapper for Firestore. Aiming to make Firestore even more accessible.",
   "main": "src/index.js",
   "scripts": {
     "test": "jest"
   },
-  "keywords": ["firestore", "firebase", "firebase-firestore"],
+  "keywords": [
+    "firestore",
+    "firebase",
+    "firebase-firestore"
+  ],
   "author": "Jason Yu <me@ycmjason.com>",
   "license": "ISC",
   "peerDependencies": {
