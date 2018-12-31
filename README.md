@@ -59,7 +59,7 @@ npm i @ycm.jason/firecracker
 
 ## API Documentation
 
-There are 3 and **only 3** classes in Firecracker.
+There are *3 and only 3* classes in Firecracker.
 1. `Firecracker`
 2. `FirecrackerCollection`
 3. `FirecrackerDocument`
