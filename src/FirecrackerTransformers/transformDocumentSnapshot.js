@@ -2,7 +2,6 @@ import FirecrackerDocument from '../FirecrackerDocument';
 import transformDocumentData from './_transformDocumentData';
 
 export default async $snapshot => {
-  console.log($snapshot.exists);
   if (!$snapshot.exists) return null;
 
   const $docData = $snapshot.data();

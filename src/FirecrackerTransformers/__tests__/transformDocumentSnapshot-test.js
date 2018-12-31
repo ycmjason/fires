@@ -14,6 +14,7 @@ describe('transformDocumentSnapshot', () => {
       ref: '$documentRef',
       data: jest.fn().mockReturnValue('$docData'),
       metadata: '$metadata',
+      exists: true,
     };
 
     when(transformDocumentData)
