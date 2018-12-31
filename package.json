@@ -1,13 +1,13 @@
 {
-  "name": "@ycm.jason/firecracker",
+  "name": "fires",
   "version": "0.0.1",
-  "description": "Firestore simplified.",
+  "description": "Firestore simplified. Fires is a well-tested wrapper for Firestore. Aiming to make Firestore even more accessible.",
   "main": "src/index.js",
   "scripts": {
     "test": "jest"
   },
-  "keywords": [],
-  "author": "Jason Yu <jason.yu@thehutgroup.com>",
+  "keywords": ["firestore", "firebase", "firebase-firestore"],
+  "author": "Jason Yu <me@ycmjason.com>",
   "license": "ISC",
   "peerDependencies": {
     "firebase": "^5.7.1"
@@ -24,5 +24,13 @@
     "jest": "^23.6.0",
     "jest-when": "^2.1.0"
   },
-  "dependencies": {}
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ycmjason/firecracker.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ycmjason/firecracker/issues"
+  },
+  "homepage": "https://github.com/ycmjason/firecracker#readme"
 }
