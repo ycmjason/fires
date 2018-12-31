@@ -1,6 +1,6 @@
 # Fires
 
-[![npm version](https://badge.fury.io/js/fires.svg)](https://www.npmjs.com/package/fires)
+[![npm version](https://img.shields.io/npm/v/fires.svg)](https://www.npmjs.com/package/fires)
 [![Build Status](https://travis-ci.com/ycmjason/fires.svg?branch=master)](https://travis-ci.com/ycmjason/fires)
 [![codecov](https://codecov.io/gh/ycmjason/fires/branch/master/graph/badge.svg)](https://codecov.io/gh/ycmjason/fires)
 
