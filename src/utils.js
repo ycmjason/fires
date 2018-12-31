@@ -1,3 +1,7 @@
+export const mapValues = (xs, f) => {
+  return fromEntries(Object.entries(xs).map(([k, v]) => [k, f(v)]));
+};
+
 export const aMapValues = async (xs, f) => {
   return fromEntries(
     await Promise.all(

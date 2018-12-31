@@ -3,13 +3,16 @@ import {
   transformDocumentRef,
   transformDocumentSnapshot,
 } from './FirecrackerTransformers';
+import { mapValues } from './utils';
 
 export default class FirecrackerDocument {
   constructor ({ $ref, $metadata, data }) {
-    Object.assign(this, data);
-    this.$id = $ref.id;
-    this.$ref = $ref;
-    this.$metadata = $metadata;
+    _setReadOnly(this, {
+      ...data,
+      $ref,
+      $id: $ref.id,
+      $metadata,
+    });
   }
 
   static async from ($obj) {
@@ -70,3 +73,20 @@ export default class FirecrackerDocument {
     );
   }
 }
+
+const _setReadOnly = (obj, props) => {
+  Object.defineProperties(
+    obj,
+    mapValues(props, v => ({
+      get () {
+        return v;
+      },
+
+      set () {
+        throw Error('Attempt to mutate variable');
+      },
+
+      enumerable: true,
+    }))
+  );
+};
