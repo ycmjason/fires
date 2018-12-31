@@ -1,7 +1,7 @@
 import { firestore, clearCollection } from '../helpers/firebase.js';
-import firecracker, {
+import fires, {
   // eslint-disable-next-line no-unused-vars
-  Firecracker, FirecrackerCollection, FirecrackerDocument
+  Fires, FiresCollection, FiresDocument
 } from '../..';
 
 const COLLECTION_NAME = 'integration-delete';
@@ -11,7 +11,7 @@ describe('Integration - Delete', () => {
   let $collection;
 
   beforeAll(() => {
-    db = firecracker();
+    db = fires();
     $collection = firestore.collection(COLLECTION_NAME);
   });
 
@@ -23,7 +23,7 @@ describe('Integration - Delete', () => {
     await clearCollection($collection);
   });
 
-  describe('FirecrackerDocument.delete', () => {
+  describe('FiresDocument.delete', () => {
     it('should be able to delete document', async () => {
       const $docRef = await $collection.add({ wow: 3, f: 'hello' });
 

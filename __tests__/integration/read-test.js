@@ -1,7 +1,7 @@
 import { firestore, clearCollection } from '../helpers/firebase.js';
-import firecracker, {
+import fires, {
   // eslint-disable-next-line no-unused-vars
-  Firecracker, FirecrackerCollection, FirecrackerDocument
+  Fires, FiresCollection, FiresDocument
 } from '../..';
 
 const COLLECTION_NAME = 'integration-read';
@@ -11,7 +11,7 @@ describe('Integration - Read', () => {
   let $collection;
 
   beforeAll(() => {
-    db = firecracker();
+    db = fires();
     $collection = firestore.collection(COLLECTION_NAME);
   });
 
@@ -23,13 +23,13 @@ describe('Integration - Read', () => {
     await clearCollection($collection);
   });
 
-  describe('FirecrackerCollection.findById', () => {
+  describe('FiresCollection.findById', () => {
     it('should find the document with a specific ID', async () => {
       await $collection.doc('someId').set({ yo: false });
 
       const doc = await db.collection(COLLECTION_NAME).findById('someId');
 
-      expect(doc).toBeInstanceOf(FirecrackerDocument);
+      expect(doc).toBeInstanceOf(FiresDocument);
       expect(doc.yo).toBe(false);
     });
 
@@ -40,7 +40,7 @@ describe('Integration - Read', () => {
     });
   });
 
-  describe('FirecrackerCollection.findAll', () => {
+  describe('FiresCollection.findAll', () => {
     it('should retrieve all documents', async () => {
       await $collection.add({ count: 100 });
       await $collection.add({ hello: 'world' });
@@ -58,7 +58,7 @@ describe('Integration - Read', () => {
     });
   });
 
-  describe('FirecrackerCollection.find', () => {
+  describe('FiresCollection.find', () => {
     it('should retrieve document with matching query', async () => {
       await $collection.add({ count: 0 });
       await $collection.add({ count: 20 });

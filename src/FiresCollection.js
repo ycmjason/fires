@@ -1,7 +1,7 @@
-import FirecrackerDocument from './FirecrackerDocument';
-import { executeQuery, transformQuerySnapshot } from './FirecrackerTransformers';
+import FiresDocument from './FiresDocument';
+import { executeQuery, transformQuerySnapshot } from './transformers';
 
-export default class FirecrackerCollection {
+export default class FiresCollection {
   constructor ($collection) {
     this.$collection = $collection;
   }
@@ -9,7 +9,7 @@ export default class FirecrackerCollection {
   // CREATE
   async create (doc) {
     const $docRef = await this.$collection.add(doc);
-    return await FirecrackerDocument.from($docRef);
+    return await FiresDocument.from($docRef);
   }
 
   async createWithId (id, doc) {
@@ -23,13 +23,13 @@ export default class FirecrackerCollection {
     }
 
     await $docRef.set(doc);
-    return await FirecrackerDocument.from($docRef);
+    return await FiresDocument.from($docRef);
   }
 
   // READ
   async findById (id) {
     const $docRef = this.$collection.doc(id);
-    return await FirecrackerDocument.from($docRef);
+    return await FiresDocument.from($docRef);
   }
 
   async findAll () {
