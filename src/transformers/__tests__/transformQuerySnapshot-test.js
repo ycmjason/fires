@@ -1,7 +1,7 @@
 import { when } from 'jest-when';
 
-jest.mock('../../FirecrackerDocument');
-import FirecrackerDocument from '../../FirecrackerDocument';
+jest.mock('../../FiresDocument');
+import FiresDocument from '../../FiresDocument';
 
 import transformQuerySnapshot from '../transformQuerySnapshot';
 
@@ -12,11 +12,11 @@ describe('FirecrackerTransformers.transformQuerySnapshot', () => {
       metadata: '$metadata',
     };
 
-    when(FirecrackerDocument.from)
+    when(FiresDocument.from)
       .calledWith('$doc1')
       .mockResolvedValue('doc1');
 
-    when(FirecrackerDocument.from)
+    when(FiresDocument.from)
       .calledWith('$doc2')
       .mockResolvedValue('doc2');
 

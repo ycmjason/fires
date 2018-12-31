@@ -3,40 +3,40 @@ import { when } from 'jest-when';
 jest.mock('firebase');
 import { firestore } from 'firebase';
 
-jest.mock('../Firecracker');
-import firecracker, { Firecracker } from '..';
+jest.mock('../Fires');
+import fires, { Fires } from '..';
 
-describe('firecracker (entry)', () => {
-  it('should return a FirecrackerCollection', () => {
+describe('fires (entry)', () => {
+  it('should return a FiresCollection', () => {
     when(firestore)
       .calledWith()
       .mockReturnValue('$mockFirestore');
 
-    Firecracker.mockImplementation(($collection) => {
+    Fires.mockImplementation(($collection) => {
       if ($collection === '$mockFirestore') {
-        return { type: 'mockFirecracker' };
+        return { type: 'mockFires' };
       }
       return {};
     });
 
-    expect(firecracker()).toEqual({ type: 'mockFirecracker' });
+    expect(fires()).toEqual({ type: 'mockFires' });
   });
 
-  it('should return the same FirecrackerCollection for subsequent calls', () => {
+  it('should return the same FiresCollection for subsequent calls', () => {
     when(firestore)
       .calledWith()
       .mockReturnValue('$mockFirestore');
 
-    Firecracker.mockImplementation(($collection) => {
+    Fires.mockImplementation(($collection) => {
       if ($collection === '$mockFirestore') {
-        return { type: 'mockFirecracker' };
+        return { type: 'mockFires' };
       }
       return {};
     });
 
-    const firecracke1 = firecracker();
-    const firecracke2 = firecracker();
-    const firecracke3 = firecracker();
+    const firecracke1 = fires();
+    const firecracke2 = fires();
+    const firecracke3 = fires();
     expect(firecracke1).toBe(firecracke2);
     expect(firecracke2).toBe(firecracke3);
   });

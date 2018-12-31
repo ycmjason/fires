@@ -3,8 +3,8 @@ import { when } from 'jest-when';
 jest.mock('../_transformDocumentData');
 import transformDocumentData from '../_transformDocumentData';
 
-jest.mock('../../FirecrackerDocument');
-import FirecrackerDocument from '../../FirecrackerDocument';
+jest.mock('../../FiresDocument');
+import FiresDocument from '../../FiresDocument';
 
 import transformDocumentSnapshot from '../transformDocumentSnapshot';
 
@@ -21,7 +21,7 @@ describe('transformDocumentSnapshot', () => {
       .calledWith('$docData')
       .mockResolvedValue('documentData');
 
-    FirecrackerDocument.mockImplementation(({ $ref, data, $metadata }) => {
+    FiresDocument.mockImplementation(({ $ref, data, $metadata }) => {
       if ($ref, '$documentRef'
         && data === 'documentData'
         && $metadata === '$metadata') {

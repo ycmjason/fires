@@ -1,5 +1,5 @@
 {
-  "name": "@ycm.jason/firecracker",
+  "name": "fires",
   "version": "0.0.1",
   "description": "Firestore simplified.",
   "main": "src/index.js",

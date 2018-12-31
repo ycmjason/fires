@@ -1,14 +1,14 @@
-import FirecrackerCollection from './FirecrackerCollection';
+import FiresCollection from './FiresCollection';
 
 const _checkFirestoreConfig = $firestore => {
   if (!$firestore._config.settings.timestampsInSnapshots) {
-    throw Error('Firecracker: Firestore must set `timestampsInSnapshots` to `true`. Please add this line before initiating Firecracker `firebase.firestore().settings({ timestampsInSnapshots: true });`');
+    throw Error('Fires: Firestore must set `timestampsInSnapshots` to `true`. Please add this line before initiating Fires `firebase.firestore().settings({ timestampsInSnapshots: true });`');
   }
 
   return;
 };
 
-export default class Firecracker {
+export default class Fires {
   constructor ($firestore) {
     _checkFirestoreConfig($firestore);
     this.$firestore = $firestore;
@@ -22,7 +22,7 @@ export default class Firecracker {
       return collectionMap.get(name);
     }
 
-    const collection = new FirecrackerCollection($firestore.collection(name));
+    const collection = new FiresCollection($firestore.collection(name));
     collectionMap.set(name, collection);
     return collection;
   }

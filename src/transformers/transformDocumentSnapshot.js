@@ -1,4 +1,4 @@
-import FirecrackerDocument from '../FirecrackerDocument';
+import FiresDocument from '../FiresDocument';
 import transformDocumentData from './_transformDocumentData';
 
 export default async $snapshot => {
@@ -6,7 +6,7 @@ export default async $snapshot => {
 
   const $docData = $snapshot.data();
 
-  return new FirecrackerDocument({
+  return new FiresDocument({
     $ref: $snapshot.ref,
     $metadata: $snapshot.metadata,
     data: await transformDocumentData($docData),
