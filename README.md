@@ -1,6 +1,3 @@
-> ## 🛠 Status: Under Development
-> Firecracker is still under active development. There might be many changes to the API but we still encourage you to try it out and give us feedback.
-
 # Firecracker
 
 [![Build Status](https://travis-ci.com/ycmjason/firecracker.svg?branch=master)](https://travis-ci.com/ycmjason/firecracker)
