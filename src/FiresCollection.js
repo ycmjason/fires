@@ -32,6 +32,12 @@ export default class FiresCollection {
     return await FiresDocument.from($docRef);
   }
 
+  async findOne (queryObj) {
+    const $query = _where(this.$collection, queryObj).limit(1);
+    const docs = await executeQuery($query);
+    return docs[0] || null;
+  }
+
   async findAll () {
     return await this.find();
   }

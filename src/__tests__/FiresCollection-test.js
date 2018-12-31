@@ -63,7 +63,7 @@ describe('FiresCollection', () => {
     });
   });
 
-  describe('firesCollection.findById(id)', async () => {
+  it('firesCollection.findById(id)', async () => {
     const $mockCollection = { doc: jest.fn() };
 
     when($mockCollection.doc)
@@ -77,6 +77,45 @@ describe('FiresCollection', () => {
     const collection = new FiresCollection($mockCollection);
 
     expect(await collection.findById('id')).toBe('doc');
+  });
+
+  it('firesCollection.findOne(queryObj)', async () => {
+    const $mockQuery = {
+      limit: jest.fn(),
+      where: jest.fn(),
+    };
+
+    when($mockQuery.limit)
+      .calledWith(1)
+      .mockReturnValue('$mockLimitedQuery');
+
+    [
+      ['country', '==', 'us'],
+      ['age', '>=', 30],
+      ['age', '<', 60],
+      ['gender', '<', 'male'],
+      ['gender', '>', 'male'],
+      ['mother.age', '>', 20],
+      ['mother.age', '<', 80],
+    ].forEach(([field, operator, value]) => {
+      when($mockQuery.where)
+        .calledWith(field, operator, value)
+        .mockReturnValue($mockQuery);
+    });
+
+    when(executeQuery)
+      .calledWith('$mockLimitedQuery')
+      .mockResolvedValue(['doc2']);
+
+    const collection = new FiresCollection($mockQuery);
+    expect(await collection.findOne({
+      country: 'us',
+      gender: ['!=', 'male'],
+      age: ['range[)', 30, 60],
+      mother: {
+        age: ['range()', 20, 80],
+      },
+    })).toEqual('doc2');
   });
 
   it ('firesCollection.findAll()', async () => {

@@ -40,6 +40,23 @@ describe('Integration - Read', () => {
     });
   });
 
+  describe('FiresCollection.findOne', () => {
+    it('should find the document matching query', async () => {
+      await $collection.add({ yo: false });
+
+      const doc = await db.collection(COLLECTION_NAME).findOne({ yo: false });
+
+      expect(doc).toBeInstanceOf(FiresDocument);
+      expect(doc.yo).toBe(false);
+    });
+
+    it('should return null if id does not exist', async () => {
+      const doc = await db.collection(COLLECTION_NAME).findOne({ x: 3 });
+
+      expect(doc).toBe(null);
+    });
+  });
+
   describe('FiresCollection.findAll', () => {
     it('should retrieve all documents', async () => {
       await $collection.add({ count: 100 });

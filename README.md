@@ -211,6 +211,21 @@ if (hk === null) {
 }
 ```
 
+#### collection.findOne(queryObj: Object): Promise\<FiresDocument or null\>
+
+This method returns a `Promise` that resolves to a document meeting the criteria of `queryObj` in `collection` if it exists, `null` otherwise.
+
+Example:
+
+```js
+const db = fires();
+const countries = db.collection('countries');
+const hk = await countries.findOne({ name: 'Hong Kong' });
+if (hk === null) {
+  // document with ID 'HK' does not exist
+}
+```
+
 #### collection.findAll(): Promise\<[FiresDocument]\>
 
 This method returns a `Promise` that resolves to all documents in the `collection`. This is equivalent to `collection.find({})`.
