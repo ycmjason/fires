@@ -8,7 +8,7 @@ Firestore simplified.
 
 ## Why?
 
-Firestore is powerful and robust with high level of flexibility. However, I personally find the official API overly-complicated for simple operations.
+Firestore is powerful and robust with high level of flexibility. I personally find the official API overly-complicated for simple operations.
 
 For example, let's take a look at the following code for retrieving a single document.
 
@@ -27,13 +27,13 @@ const documentData = documentSnapshot.data();
  */
 ```
 
-As illustrated above, in order to retrieve a single document, 4 unintuitive steps are involved: `CollectionReference > DocumentReference > DocumentSnapshot > DocumentData`.
+As illustrated above, retrieving a single document involves 4 unintuitive steps: `CollectionReference > DocumentReference > DocumentSnapshot > DocumentData`.
 
-Firestore API is highly flexible. It takes care of many use cases; allowing developers to do all sorts of optimisation. However, this flexibility comes at a cost of DX (developer experience) as illustrated previously how a presumably simple operation requires 4 unintuitive steps.
+Firestore API is highly flexible. It takes care of many use cases; allowing developers to do all sorts of optimisation. This flexibility comes at a cost of DX (developer experience) as illustrated previously how a presumably simple operation requires 4 unintuitive steps.
 
-Fires aims to improve the developer experience by exposing a very intuitive and relatively simple API (merely 3 classes). It hides most of the complexity from the Firestore API, allowing developers to focus on the data. Hoever this also sacrifices some of the flexibility the original Firestore API provides.
+Fires aims to improve the developer experience by exposing a relatively more intuitive and simpler API (merely 3 classes). It hides most of the complexity from the Firestore API, allowing developers to focus on the data. However this also sacrifices some of the flexibility the original Firestore API provides.
 
-Conceptually, retriving a document from a collection should be as simple as `Collection -> Document`. This is exactly what you will do with Fires:
+Conceptually, retriving a document from a collection should be as simple as `Collection -> Document`. This is what you will do with Fires:
 
 ```js
 const db = fires();
@@ -58,7 +58,7 @@ npm i fires
 
 ## Usage Overview
 
-The following example will demonstrate basic CRUD operations with Fires.
+The following example demonstrates the basic CRUD operations with Fires.
 
 ```js
 import firebase from 'firebase';
@@ -117,7 +117,7 @@ people.subscribe({
 
 ## API Documentation
 
-There are *3 and only 3* classes in Fires.
+The **3 and only 3** classes in Fires.
 1. `Fires`
 2. `FiresCollection`
 3. `FiresDocument`
@@ -213,7 +213,7 @@ if (hk === null) {
 
 #### collection.findAll(): Promise\<[FiresDocument]\>
 
-This method returns a `Promise` that resolves to all documents in the `collection`. This is essentially equivalent to `collection.find({})`.
+This method returns a `Promise` that resolves to all documents in the `collection`. This is equivalent to `collection.find({})`.
 
 Example:
 
@@ -244,7 +244,7 @@ const specialUsers = await users.find({
 
 Each entry in the `queryObj` contains a key and value pair of `field` and `query`.
 
-Multiple entries are called compound queries; they are combined with logical `AND`.  E.g. `await collection.find({ a: 3, b: 7})` will return all documents with `doc.a == 3 && doc.b == 7`.
+Multiple entries are implemented as compound queries; they are combined with logical `AND`.  E.g. `await collection.find({ a: 3, b: 7})` will return all documents with `doc.a == 3 && doc.b == 7`.
 
 There are 3 types of queries:
 
