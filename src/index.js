@@ -1,6 +1,6 @@
 import firestore from './$firestore';
 import Fires from './Fires';
-import { setSettings } from './settings';
+import { set as setSettings } from './settings';
 
 export { default as FiresCollection } from './FiresCollection';
 export { default as FiresDocument } from './FiresDocument';

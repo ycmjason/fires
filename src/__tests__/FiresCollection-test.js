@@ -7,9 +7,75 @@ import executeQuery from '../transformers/executeQuery';
 jest.mock('../transformers/transformQuerySnapshot');
 import transformQuerySnapshot from '../transformers/transformQuerySnapshot';
 
+jest.mock('../fieldValues/serverTimestamp');
+import serverTimestamp from '../fieldValues/serverTimestamp';
+
+import {
+  set as setSettings,
+  reset as resetSettings,
+} from '../settings';
+
 import { when } from 'jest-when';
 
 describe('FiresCollection', () => {
+  describe('settings.autoTimestamps = true', () => {
+    beforeAll(() => {
+      setSettings({ autoTimestamps: true });
+    });
+
+    afterAll(() => {
+      resetSettings();
+    });
+
+    it('firesCollection.create(doc)', async () => {
+      const $mockCollection = { add: jest.fn() };
+
+      serverTimestamp.mockReturnValue('time');
+
+      when($mockCollection.add).calledWith({
+        a: 3,
+        $created: 'time',
+        $updated: 'time',
+      }).mockReturnValue('the ref');
+
+      when(FiresDocument.from)
+        .calledWith('the ref')
+        .mockResolvedValue('yoyo');
+
+      const collection = new FiresCollection($mockCollection);
+
+      expect(await collection.create({ a: 3 })).toBe('yoyo');
+    });
+
+    it('firesCollection.createWithId(doc)', async () => {
+      const $mockCollection = { doc: jest.fn() };
+
+      serverTimestamp.mockReturnValue('time');
+
+      const $mockDocRef = {
+        set: jest.fn(),
+        get: () => ({ exists: false }),
+      };
+
+      when($mockCollection.doc)
+        .calledWith('the id')
+        .mockReturnValue($mockDocRef);
+
+      when(FiresDocument.from)
+        .calledWith($mockDocRef)
+        .mockResolvedValue('yoyo');
+
+      const collection = new FiresCollection($mockCollection);
+
+      expect(await collection.createWithId('the id', { a: 3 })).toBe('yoyo');
+      expect($mockDocRef.set).toHaveBeenCalledWith({
+        a: 3,
+        $created: 'time',
+        $updated: 'time',
+      });
+    });
+  });
+
   it('firesCollection.create(doc)', async () => {
     const $mockCollection = { add: jest.fn() };
 
@@ -30,7 +96,10 @@ describe('FiresCollection', () => {
     it('should create document at id', async () => {
       const $mockCollection = { doc: jest.fn() };
 
-      const $mockDocRef = { set: jest.fn(), get: () => ({ exists: false }) };
+      const $mockDocRef = {
+        set: jest.fn(),
+        get: () => ({ exists: false }),
+      };
 
       when($mockCollection.doc)
         .calledWith('the id')

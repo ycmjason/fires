@@ -1,9 +1,11 @@
-const settings = {
+const INITIAL_SETTINGS = {
   autoTimestamps: false,
 };
 
-export default settings;
+const settings = { ...INITIAL_SETTINGS };
 
-export const setSettings = (opts) => {
-  Object.assign(settings, opts);
-};
+export const set = (opts) => Object.assign(settings, opts);
+
+export const reset = () => Object.assign(settings, INITIAL_SETTINGS);
+
+export default settings;
