@@ -76,7 +76,7 @@ firebase.initializeApp({
 // Disable deprecated features
 firebase.firestore().settings({ timestampsInSnapshots: true });
 
-fire.settings({
+fires.settings({
   autoTimestamps: true // this will insert `$created` and `$updated` to each document
 });
 
@@ -129,14 +129,14 @@ The **3 and only 3** classes in Fires.
 ### 1. Fires
 
 #### fires.settings(options)
-This static method allow you to change the behavior of fires. Currently there is only one option namely, `autoTimestamps`, which will insert `$created` and `$updated` automatically to each document.
+This static method changes the behavior of fires. Currently there is only one option namely, `autoTimestamps`, which will insert `$created` and `$updated` automatically to each document.
 
 Example:
 
 ```js
 import fires from 'fires';
 fires.settings({
-  autoTimestamps: true, // default: false
+  autoTimestamps: true, // default to false
 });
 ```
 
