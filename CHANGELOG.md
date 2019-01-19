@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.2.1
+- Changed license to MIT
+
 ## 0.2.0
 
 ### Feature
