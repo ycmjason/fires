@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.0
+
+### Feature
+- `firebase.settings({ autoTimestamps })`
+
 ## 0.1.2
 - Use production version of firebase
 
