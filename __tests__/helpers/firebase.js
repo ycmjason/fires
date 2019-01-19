@@ -1,5 +1,5 @@
-import firebase from 'firebase';
 import 'firebase/firestore';
+import firebase, { firestore } from 'firebase';
 
 firebase.initializeApp({
   apiKey: process.env.FIREBASE_API_KEY,
@@ -10,8 +10,8 @@ firebase.initializeApp({
   messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
 });
 
-const firestore = firebase.firestore();
-firestore.settings({ timestampsInSnapshots: true });
+const $db = firestore();
+$db.settings({ timestampsInSnapshots: true });
 
 const clearCollection = async $collection => {
   await Promise.all(
@@ -21,4 +21,8 @@ const clearCollection = async $collection => {
   );
 };
 
-export { firestore, clearCollection };
+export {
+  firestore,
+  $db,
+  clearCollection,
+};

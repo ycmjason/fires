@@ -1,3 +1,5 @@
+import { when } from 'jest-when';
+
 import { FiresDocument } from '..';
 
 jest.mock('../$firestore');
@@ -9,9 +11,48 @@ import transformDocumentSnapshot from '../transformers/transformDocumentSnapshot
 jest.mock('../transformers/transformDocumentRef');
 import transformDocumentRef from '../transformers/transformDocumentRef';
 
-import { when } from 'jest-when';
+jest.mock('../fieldValues/serverTimestamp');
+import serverTimestamp from '../fieldValues/serverTimestamp';
+
+import {
+  set as setSettings,
+  reset as resetSettings,
+} from '../settings';
 
 describe('FiresDocument', () => {
+  describe('settings.autoTimestamps = true', () => {
+    beforeAll(() => {
+      setSettings({ autoTimestamps: true });
+    });
+
+    afterAll(() => {
+      resetSettings();
+    });
+
+    it('firesDocument.update(data)', async () => {
+      const $mockDocRef = new firestore.DocumentReference();
+
+      serverTimestamp.mockReturnValue('now');
+
+      when(transformDocumentRef)
+        .calledWith($mockDocRef)
+        .mockResolvedValue('updated doc');
+
+      const doc = new FiresDocument({
+        $ref: $mockDocRef,
+        $metadata: {},
+        data: { a: 3 },
+      });
+
+      const newDocument = await doc.update({ a: 4 });
+      expect(newDocument).toBe('updated doc');
+      expect($mockDocRef.update).toHaveBeenCalledWith({
+        a: 4,
+        $updated: 'now',
+      });
+    });
+  });
+
   describe('FiresCollection.from', () => {
     it('FiresCollection.from($docRef)', async () => {
       const $mockDocRef = new firestore.DocumentReference();
@@ -49,6 +90,9 @@ describe('FiresDocument', () => {
 
     const newDocument = await doc.update({ a: 4 });
     expect(newDocument).toBe('updated doc');
+    expect($mockDocRef.update).toHaveBeenCalledWith({
+      a: 4,
+    });
   });
 
   it('firesDocument.delete()', async () => {

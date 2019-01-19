@@ -1,4 +1,4 @@
-import { firestore, clearCollection } from '../helpers/firebase.js';
+import { $db, clearCollection } from '../helpers/firebase.js';
 import fires, {
   // eslint-disable-next-line no-unused-vars
   Fires, FiresCollection, FiresDocument
@@ -40,7 +40,7 @@ describe('Integration - Subscribe', () => {
     // This is because onSnapshot will cache results,
     // which make the tests interfere each other.
     collectionName = `integration-subscribe-${i++}th-test`;
-    $collection = firestore.collection(collectionName);
+    $collection = $db.collection(collectionName);
     await clearCollection($collection);
   });
 

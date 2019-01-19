@@ -1,10 +1,19 @@
-import { firestore, clearCollection } from '../helpers/firebase.js';
+import { $db, firestore, clearCollection } from '../helpers/firebase.js';
 import fires, {
   // eslint-disable-next-line no-unused-vars
   Fires, FiresCollection, FiresDocument
 } from '../..';
 
+import {
+  set as setSettings,
+  reset as resetSettings,
+} from '../../src/settings';
+
+import '../matchers/toBeWithinRange';
+
 const COLLECTION_NAME = 'integration-create';
+
+const getCurrentSecond = () => Math.floor(Date.now() / 1000);
 
 describe('Integration - Create', () => {
   let db;
@@ -12,7 +21,7 @@ describe('Integration - Create', () => {
 
   beforeAll(() => {
     db = fires();
-    $collection = firestore.collection(COLLECTION_NAME);
+    $collection = $db.collection(COLLECTION_NAME);
   });
 
   beforeEach(async () => {
@@ -21,6 +30,64 @@ describe('Integration - Create', () => {
 
   afterAll(async () => {
     await clearCollection($collection);
+  });
+
+  describe('settings.autoTimestamps = true', () => {
+    beforeAll(() => {
+      setSettings({ autoTimestamps: true });
+    });
+
+    afterAll(() => {
+      resetSettings();
+    });
+
+    describe('FiresCollection.create', () => {
+      it('should be able to add new document', async () => {
+        const startSecond = getCurrentSecond();
+        await db.collection(COLLECTION_NAME).create({ a: 3 });
+        const endSecond = getCurrentSecond();
+
+        const $querySnapshot = await $collection.get();
+
+        expect($querySnapshot.docs.length).toBe(1);
+        const data = $querySnapshot.docs[0].data();
+        expect(data.a).toBe(3);
+
+        expect(data.$created).toBeInstanceOf(firestore.Timestamp);
+        expect(data.$created.seconds)
+          .toBeWithinRange(startSecond, endSecond);
+
+        expect(data.$updated).toBeInstanceOf(firestore.Timestamp);
+        expect(data.$updated.seconds)
+          .toBeWithinRange(startSecond, endSecond);
+      });
+    });
+
+    describe('FiresCollection.createWithId', () => {
+      it('should be able to add new document with specific ID', async () => {
+        const startSecond = Math.floor(Date.now() / 1000);
+        await db.collection(COLLECTION_NAME).createWithId(
+          'wow',
+          { x: 5 },
+        );
+        const endSecond = Math.ceil(Date.now() / 1000);
+
+        const $querySnapshot = await $collection.get();
+
+        expect($querySnapshot.docs.length).toBe(1);
+        expect($querySnapshot.docs[0].id).toBe('wow');
+        const data = $querySnapshot.docs[0].data();
+        expect(data.x).toBe(5);
+
+        expect(data.$created).toBeInstanceOf(firestore.Timestamp);
+        expect(data.$created.seconds)
+          .toBeWithinRange(startSecond, endSecond);
+
+        expect(data.$updated).toBeInstanceOf(firestore.Timestamp);
+        expect(data.$updated.seconds)
+          .toBeWithinRange(startSecond, endSecond);
+      });
+    });
   });
 
   describe('FiresCollection.create', () => {
