@@ -4,6 +4,19 @@ import {
   transformDocumentSnapshot,
 } from './transformers';
 import { mapValues } from './utils';
+import settings from './settings';
+import serverTimestamp from './fieldValues/serverTimestamp';
+
+const prepareToBeUpdatedData = data => {
+  const d = { ...data };
+
+  if (settings.autoTimestamps) {
+    d.$updated = serverTimestamp();
+  }
+
+  return d;
+};
+
 
 export default class FiresDocument {
   constructor ({ $ref, $metadata, data }) {
@@ -29,7 +42,7 @@ export default class FiresDocument {
 
   // Update
   async update (data) {
-    await this.$ref.update(data);
+    await this.$ref.update(prepareToBeUpdatedData(data));
     return await FiresDocument.from(this.$ref);
   }
 
