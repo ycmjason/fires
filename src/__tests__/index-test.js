@@ -1,13 +1,14 @@
 import { when } from 'jest-when';
 
-jest.mock('firebase');
-import { firestore } from 'firebase';
+jest.mock('../$firestore');
+import firestore from '../$firestore';
 
 jest.mock('../Fires');
 import fires, { Fires } from '..';
 
 describe('fires (entry)', () => {
   it('should return a FiresCollection', () => {
+    console.log(firestore);
     when(firestore)
       .calledWith()
       .mockReturnValue('$mockFirestore');

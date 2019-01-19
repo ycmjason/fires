@@ -1,7 +1,7 @@
 import { FiresDocument } from '..';
 
-jest.mock('firebase');
-import { firestore } from 'firebase';
+jest.mock('../$firestore');
+import firestore from '../$firestore';
 
 jest.mock('../transformers/transformDocumentSnapshot');
 import transformDocumentSnapshot from '../transformers/transformDocumentSnapshot';

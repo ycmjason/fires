@@ -1,4 +1,4 @@
-import { firestore } from 'firebase';
+import firestore from './$firestore';
 import Fires from './Fires';
 
 export { default as FiresCollection } from './FiresCollection';
