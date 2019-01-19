@@ -76,6 +76,10 @@ firebase.initializeApp({
 // Disable deprecated features
 firebase.firestore().settings({ timestampsInSnapshots: true });
 
+fire.settings({
+  autoTimestamps: true // this will insert `$created` and `$updated` to each document
+});
+
 const db = fires();
 const people = db.collection('people');
 
@@ -84,24 +88,24 @@ let peter = await people.create({
   name: 'Peter',
   age: 30,
 });
-// peter: { $id: "...", name: "Peter", age: 30 }
+// peter: { $id: "...", name: "Peter", age: 30, $created: Date, $updated: Date }
 
 // Read
 const adults = await people.find({
   age: ['>=', 18],
 });
-// adults: [ { $id: "...", name: "Peter", age: 30 }, ... ]
+// adults: [ { $id: "...", name: "Peter", age: 30, $created: Date, $updated: Date}, ... ]
 
 // Update
 peter = await peter.update({ age: 40 });
-// peter: { $id: "...", name: "Peter", age: 40 }
+// peter: { $id: "...", name: "Peter", age: 40, $created: Date, $updated: Date }
 
 // Delete
 await peter.delete();
 
 // Subscribe
 people.subscribe(ppl => {
-  // ppl: [ { $id: "...", name: "Mary", age: 10 }, ... ]
+  // ppl: [ { $id: "...", name: "Mary", age: 10, $created: Date, $updated: Date }, ... ]
 }, err => {
   // ...
 });
@@ -109,7 +113,7 @@ people.subscribe(ppl => {
 people.subscribe({
   age: ['<', 18],
 }, children => {
-  // children: [ { $id: "...", name: "Mary", age: 10 }, ... ]
+  // children: [ { $id: "...", name: "Mary", age: 10, $created: Date, $updated: Date }, ... ]
 }, err => {
   // ...
 });
@@ -123,6 +127,18 @@ The **3 and only 3** classes in Fires.
 3. `FiresDocument`
 
 ### 1. Fires
+
+#### fires.settings(options)
+This static method allow you to change the behavior of fires. Currently there is only one option namely, `autoTimestamps`, which will insert `$created` and `$updated` automatically to each document.
+
+Example:
+
+```js
+import fires from 'fires';
+fires.settings({
+  autoTimestamps: true, // default: false
+});
+```
 
 #### fires(): Fires
 
