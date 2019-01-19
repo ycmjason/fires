@@ -8,7 +8,6 @@ import fires, { Fires } from '..';
 
 describe('fires (entry)', () => {
   it('should return a FiresCollection', () => {
-    console.log(firestore);
     when(firestore)
       .calledWith()
       .mockReturnValue('$mockFirestore');
