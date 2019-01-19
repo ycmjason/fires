@@ -14,7 +14,7 @@
     "firebase-firestore"
   ],
   "author": "Jason Yu <me@ycmjason.com>",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "firebase": "^5.7.1"
   },
