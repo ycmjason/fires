@@ -1,6 +1,6 @@
 import firestore from './$firestore';
 import Fires from './Fires';
-import settings from './settings';
+import { setSettings } from './settings';
 
 export { default as FiresCollection } from './FiresCollection';
 export { default as FiresDocument } from './FiresDocument';
@@ -15,8 +15,6 @@ const fires = () => {
   return firesSingleton;
 };
 
-fires.settings = (opts) => {
-  Object.assign(settings, opts);
-};
+fires.settings = setSettings;
 
 export default fires;
