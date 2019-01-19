@@ -1,3 +1,5 @@
+import { when } from 'jest-when';
+
 jest.mock('../FiresDocument');
 import { FiresCollection, FiresDocument } from '..';
 
@@ -14,8 +16,6 @@ import {
   set as setSettings,
   reset as resetSettings,
 } from '../settings';
-
-import { when } from 'jest-when';
 
 describe('FiresCollection', () => {
   describe('settings.autoTimestamps = true', () => {

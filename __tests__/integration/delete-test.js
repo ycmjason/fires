@@ -1,4 +1,4 @@
-import { firestore, clearCollection } from '../helpers/firebase.js';
+import { $db, clearCollection } from '../helpers/firebase.js';
 import fires, {
   // eslint-disable-next-line no-unused-vars
   Fires, FiresCollection, FiresDocument
@@ -12,7 +12,7 @@ describe('Integration - Delete', () => {
 
   beforeAll(() => {
     db = fires();
-    $collection = firestore.collection(COLLECTION_NAME);
+    $collection = $db.collection(COLLECTION_NAME);
   });
 
   beforeEach(async () => {
