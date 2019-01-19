@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.1.2
+- Use production version of firebase
+
 ## 0.1.1
 
 ### Feature
