@@ -1,6 +1,6 @@
 {
   "name": "fires",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Firestore simplified. Fires is a well-tested wrapper for Firestore. Aiming to make Firestore even more accessible.",
   "main": "src/index.js",
   "scripts": {

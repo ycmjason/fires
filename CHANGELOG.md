@@ -1,5 +1,9 @@
 # CHANGELOG
 
+## 0.3.0
+- Bump dependencies
+- Add prettier
+
 ## 0.2.1
 - Changed license to MIT
 
