@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.3.1
+- update readme to remvoe explicit set of `timestampsInSnapshots: true`
+
 ## 0.3.0
 - Bump dependencies
 - Add prettier
