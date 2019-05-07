@@ -7,6 +7,7 @@ import fires, {
 const COLLECTION_NAME = 'integration-read';
 
 describe('Integration - Read', () => {
+  jest.setTimeout(10000);
   let db;
   let $collection;
 
