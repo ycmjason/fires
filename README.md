@@ -73,9 +73,6 @@ firebase.initializeApp({
   projectId: '### CLOUD FIRESTORE PROJECT ID ###'
 });
 
-// Disable deprecated features
-firebase.firestore().settings({ timestampsInSnapshots: true });
-
 fires.settings({
   autoTimestamps: true // this will insert `$created` and `$updated` to each document
 });
@@ -158,9 +155,6 @@ firebase.initializeApp({
   authDomain: '### FIREBASE AUTH DOMAIN ###',
   projectId: '### CLOUD FIRESTORE PROJECT ID ###'
 });
-
-// Disable deprecated features
-firebase.firestore().settings({ timestampsInSnapshots: true });
 
 const db = fires();
 
