@@ -1,11 +1,11 @@
-import firestore from './$firestore';
+import firestore from "./$firestore";
 import {
   transformDocumentRef,
-  transformDocumentSnapshot,
-} from './transformers';
-import { mapValues } from './utils';
-import settings from './settings';
-import serverTimestamp from './fieldValues/serverTimestamp';
+  transformDocumentSnapshot
+} from "./transformers";
+import { mapValues } from "./utils";
+import settings from "./settings";
+import serverTimestamp from "./fieldValues/serverTimestamp";
 
 const prepareToBeUpdatedData = data => {
   const d = { ...data };
@@ -17,18 +17,17 @@ const prepareToBeUpdatedData = data => {
   return d;
 };
 
-
 export default class FiresDocument {
-  constructor ({ $ref, $metadata, data }) {
+  constructor({ $ref, $metadata, data }) {
     _setReadOnly(this, {
       ...data,
       $ref,
       $id: $ref.id,
-      $metadata,
+      $metadata
     });
   }
 
-  static async from ($obj) {
+  static async from($obj) {
     if ($obj instanceof firestore.DocumentReference) {
       return await transformDocumentRef($obj);
     }
@@ -41,37 +40,37 @@ export default class FiresDocument {
   }
 
   // Update
-  async update (data) {
+  async update(data) {
     await this.$ref.update(prepareToBeUpdatedData(data));
     return await FiresDocument.from(this.$ref);
   }
 
   // Delete
-  async delete () {
+  async delete() {
     await this.$ref.delete();
     return;
   }
 
   // SUBSCRIBE
-  subscribe (onNext, onError) {
+  subscribe(onNext, onError) {
     return this._subscribe({
       $ref: this.$ref,
       options: {},
       onNext,
-      onError,
+      onError
     });
   }
 
-  subscribeIncludingMetadata (onNext, onError) {
+  subscribeIncludingMetadata(onNext, onError) {
     return this._subscribe({
       $ref: this.$ref,
       options: { includeMetadataChanges: true },
       onNext,
-      onError,
+      onError
     });
   }
 
-  _subscribe ({ $ref, options, onNext, onError }) {
+  _subscribe({ $ref, options, onNext, onError }) {
     return $ref.onSnapshot(
       options,
       async $documentSnapshot => {
@@ -82,7 +81,7 @@ export default class FiresDocument {
       err => {
         if (!onError) throw err;
         onError(err);
-      },
+      }
     );
   }
 }
@@ -91,15 +90,15 @@ const _setReadOnly = (obj, props) => {
   Object.defineProperties(
     obj,
     mapValues(props, v => ({
-      get () {
+      get() {
         return v;
       },
 
-      set () {
-        throw Error('Attempt to mutate variable');
+      set() {
+        throw Error("Attempt to mutate variable");
       },
 
-      enumerable: true,
+      enumerable: true
     }))
   );
 };

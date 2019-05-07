@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`Integration - Create FiresCollection.createWithId should not add any document if specific ID exists 1`] = `[Error: integration-create.wow already exists]`;

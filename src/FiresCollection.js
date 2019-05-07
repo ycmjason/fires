@@ -1,7 +1,7 @@
-import FiresDocument from './FiresDocument';
-import { executeQuery, transformQuerySnapshot } from './transformers';
-import settings from './settings';
-import serverTimestamp from './fieldValues/serverTimestamp';
+import FiresDocument from "./FiresDocument";
+import { executeQuery, transformQuerySnapshot } from "./transformers";
+import settings from "./settings";
+import serverTimestamp from "./fieldValues/serverTimestamp";
 
 const prepareToBeInsertedDocument = doc => {
   const d = { ...doc };
@@ -15,19 +15,19 @@ const prepareToBeInsertedDocument = doc => {
 };
 
 export default class FiresCollection {
-  constructor ($collection) {
+  constructor($collection) {
     this.$collection = $collection;
   }
 
   // CREATE
-  async create (doc) {
+  async create(doc) {
     const $docRef = await this.$collection.add(
       prepareToBeInsertedDocument(doc)
     );
     return await FiresDocument.from($docRef);
   }
 
-  async createWithId (id, doc) {
+  async createWithId(id, doc) {
     const { $collection } = this;
     const $docRef = this.$collection.doc(id);
 
@@ -42,56 +42,51 @@ export default class FiresCollection {
   }
 
   // READ
-  async findById (id) {
+  async findById(id) {
     const $docRef = this.$collection.doc(id);
     return await FiresDocument.from($docRef);
   }
 
-  async findOne (queryObj) {
+  async findOne(queryObj) {
     const $query = _where(this.$collection, queryObj).limit(1);
     const docs = await executeQuery($query);
     return docs[0] || null;
   }
 
-  async findAll () {
+  async findAll() {
     return await this.find();
   }
 
-  async find (queryObj) {
+  async find(queryObj) {
     // CollectionRef extends Query
     const $query = _where(this.$collection, queryObj);
     return await executeQuery($query);
   }
 
   // SUBSCRIBE
-  subscribe (...args) {
+  subscribe(...args) {
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     const $query = _where(this.$collection, queryObj);
     return this._subscribe({
       $query,
       options: {},
       onNext,
-      onError,
+      onError
     });
   }
 
-  subscribeIncludingMetadata (...args) {
+  subscribeIncludingMetadata(...args) {
     const { queryObj, onNext, onError } = _parseSubscribeArgs(...args);
     const $query = _where(this.$collection, queryObj);
     return this._subscribe({
       $query,
       options: { includeMetadataChanges: true },
       onNext,
-      onError,
+      onError
     });
   }
 
-  _subscribe ({
-    $query,
-    options,
-    onNext,
-    onError,
-  }) {
+  _subscribe({ $query, options, onNext, onError }) {
     return $query.onSnapshot(
       options,
       async $querySnapshot => {
@@ -101,29 +96,31 @@ export default class FiresCollection {
       err => {
         if (!onError) throw err;
         onError(err);
-      },
+      }
     );
   }
 }
 
 const _parseSubscribeArgs = (queryObjOrOnNext, onNextOrOnError, onError) => {
-  if (typeof queryObjOrOnNext === 'object') {
+  if (typeof queryObjOrOnNext === "object") {
     return {
       queryObj: queryObjOrOnNext,
       onNext: onNextOrOnError,
-      onError,
+      onError
     };
   }
 
-  if (typeof queryObjOrOnNext === 'function') {
+  if (typeof queryObjOrOnNext === "function") {
     return {
       queryObj: undefined,
       onNext: queryObjOrOnNext,
-      onError: onNextOrOnError,
+      onError: onNextOrOnError
     };
   }
 
-  throw Error('Unexpected error. Please check the arguments of subscribe or subscribeIncludingMetadata');
+  throw Error(
+    "Unexpected error. Please check the arguments of subscribe or subscribeIncludingMetadata"
+  );
 };
 
 const _where = ($query, queryObj) => {
@@ -136,32 +133,32 @@ const _where = ($query, queryObj) => {
 
 const _parseQueryObj = (queryObj = {}) => {
   const parseQueryEntry = (field, query) => {
-    if (['boolean', 'string', 'number'].includes(typeof query)) {
-      return [[field, '==', query]];
+    if (["boolean", "string", "number"].includes(typeof query)) {
+      return [[field, "==", query]];
     }
 
     if (Array.isArray(query)) {
       const operator = query[0];
-      if (['<', '<=', '==', '>', '>=', 'array-contains'].includes(operator)) {
+      if (["<", "<=", "==", ">", ">=", "array-contains"].includes(operator)) {
         const [operator, value] = query;
         return [[field, operator, value]];
-      } else if (operator === '!=') {
+      } else if (operator === "!=") {
         const value = query[1];
-        return [[field, '<', value], [field, '>', value]];
+        return [[field, "<", value], [field, ">", value]];
       } else if (/^range[[(][)\]]$/.test(operator)) {
         const [operator, start, end] = query;
         const inclusiveStart = /^range\[/.test(operator);
         const inclusiveEnd = /\]$/.test(operator);
         return [
-          [field, inclusiveStart ? '>=': '>', start],
-          [field, inclusiveEnd ? '<=': '<', end],
+          [field, inclusiveStart ? ">=" : ">", start],
+          [field, inclusiveEnd ? "<=" : "<", end]
         ];
       }
 
       throw Error(`Unknown operator ${operator}.`);
     }
 
-    if (typeof query === 'object') {
+    if (typeof query === "object") {
       return _parseQueryObj(query).map(([subfield, operator, value]) => {
         return [`${field}.${subfield}`, operator, value];
       });

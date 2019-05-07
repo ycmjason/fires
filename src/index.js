@@ -1,9 +1,9 @@
-import firestore from './$firestore';
-import Fires from './Fires';
-import { set as setSettings } from './settings';
+import firestore from "./$firestore";
+import Fires from "./Fires";
+import { set as setSettings } from "./settings";
 
-export { default as FiresCollection } from './FiresCollection';
-export { default as FiresDocument } from './FiresDocument';
+export { default as FiresCollection } from "./FiresCollection";
+export { default as FiresDocument } from "./FiresDocument";
 export { Fires };
 
 let firesSingleton;

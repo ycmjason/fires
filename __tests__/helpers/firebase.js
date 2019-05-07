@@ -11,7 +11,6 @@ firebase.initializeApp({
 });
 
 const $db = firestore();
-$db.settings({ timestampsInSnapshots: true });
 
 const clearCollection = async $collection => {
   await Promise.all(

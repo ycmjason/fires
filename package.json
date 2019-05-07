@@ -16,19 +16,20 @@
   "author": "Jason Yu <me@ycmjason.com>",
   "license": "MIT",
   "peerDependencies": {
-    "firebase": "^5.7.1"
+    "firebase": "^5.11.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/preset-env": "^7.2.3",
+    "@babel/core": "^7.4.4",
+    "@babel/preset-env": "^7.4.4",
     "@ycm.jason/eslint-config": "^1.3.1",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^23.6.0",
-    "dotenv": "^6.2.0",
-    "eslint": "^5.11.0",
-    "firebase": "^5.7.1",
-    "jest": "^23.6.0",
-    "jest-when": "^2.1.0"
+    "babel-jest": "^24.8.0",
+    "dotenv": "^8.0.0",
+    "eslint": "^5.16.0",
+    "firebase": "^5.11.1",
+    "jest": "^24.8.0",
+    "jest-when": "^2.5.0",
+    "prettier": "^1.17.0"
   },
   "dependencies": {},
   "repository": {
