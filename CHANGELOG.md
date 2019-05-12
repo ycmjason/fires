@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 0.4.0
+- bump firebase to 6.0
+
 ## 0.3.1
 - update readme to remvoe explicit set of `timestampsInSnapshots: true`
 
