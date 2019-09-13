@@ -1,5 +1,5 @@
-import FiresDocument from "../FiresDocument";
-import transformDocumentData from "./_transformDocumentData";
+import FiresDocument from '../FiresDocument';
+import transformDocumentData from './_transformDocumentData';
 
 export default async $snapshot => {
   if (!$snapshot.exists) return null;
@@ -9,6 +9,6 @@ export default async $snapshot => {
   return new FiresDocument({
     $ref: $snapshot.ref,
     $metadata: $snapshot.metadata,
-    data: await transformDocumentData($docData)
+    data: await transformDocumentData($docData),
   });
 };

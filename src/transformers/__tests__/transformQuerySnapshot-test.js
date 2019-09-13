@@ -6,7 +6,7 @@ import FiresDocument from '../../FiresDocument';
 import transformQuerySnapshot from '../transformQuerySnapshot';
 
 describe('FirecrackerTransformers.transformQuerySnapshot', () => {
-  it ('should return a list of dcouments with $metadata', async () => {
+  it('should return a list of dcouments with $metadata', async () => {
     const $mockQuerySnapshot = {
       docs: ['$doc1', '$doc2'],
       metadata: '$metadata',
@@ -20,11 +20,12 @@ describe('FirecrackerTransformers.transformQuerySnapshot', () => {
       .calledWith('$doc2')
       .mockResolvedValue('doc2');
 
-    expect(await transformQuerySnapshot($mockQuerySnapshot))
-      .toEqual((() => {
+    expect(await transformQuerySnapshot($mockQuerySnapshot)).toEqual(
+      (() => {
         const expectedDocs = ['doc1', 'doc2'];
         expectedDocs.$metadata = '$metadata';
         return expectedDocs;
-      })());
+      })(),
+    );
   });
 });

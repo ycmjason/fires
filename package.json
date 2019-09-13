@@ -4,6 +4,8 @@
   "description": "Firestore simplified. Fires is a well-tested wrapper for Firestore. Aiming to make Firestore even more accessible.",
   "main": "src/index.js",
   "scripts": {
+    "eslint": "eslint --fix 'src/**' '__tests__/**'",
+    "prettier": "prettier --write 'src/**/*' '__tests__/**/*'",
     "preversion": "$EDITOR CHANGELOG.md",
     "version": "git add -A",
     "test": "jest"
@@ -16,20 +18,20 @@
   "author": "Jason Yu <me@ycmjason.com>",
   "license": "MIT",
   "peerDependencies": {
-    "firebase": "^6.0.2"
+    "firebase": "^6.6.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.4",
-    "@babel/preset-env": "^7.4.4",
+    "@babel/core": "^7.6.0",
+    "@babel/preset-env": "^7.6.0",
     "@ycm.jason/eslint-config": "^1.3.1",
     "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^24.8.0",
-    "dotenv": "^8.0.0",
-    "eslint": "^5.16.0",
-    "firebase": "^6.0.2",
-    "jest": "^24.8.0",
-    "jest-when": "^2.5.0",
-    "prettier": "^1.17.0"
+    "babel-jest": "^24.9.0",
+    "dotenv": "^8.1.0",
+    "eslint": "^6.3.0",
+    "firebase": "^6.6.0",
+    "jest": "^24.9.0",
+    "jest-when": "^2.7.0",
+    "prettier": "^1.18.2"
   },
   "dependencies": {},
   "repository": {

@@ -1,9 +1,8 @@
-import firestore from "./$firestore";
-import Fires from "./Fires";
-import { set as setSettings } from "./settings";
+import firestore from './$firestore';
+import Fires from './Fires';
 
-export { default as FiresCollection } from "./FiresCollection";
-export { default as FiresDocument } from "./FiresDocument";
+export { default as FiresCollection } from './FiresCollection';
+export { default as FiresDocument } from './FiresDocument';
 export { Fires };
 
 let firesSingleton;
@@ -14,7 +13,5 @@ const fires = () => {
   firesSingleton = new Fires(firestore());
   return firesSingleton;
 };
-
-fires.settings = setSettings;
 
 export default fires;

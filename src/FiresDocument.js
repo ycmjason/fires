@@ -1,18 +1,12 @@
-import firestore from "./$firestore";
-import {
-  transformDocumentRef,
-  transformDocumentSnapshot
-} from "./transformers";
-import { mapValues } from "./utils";
-import settings from "./settings";
-import serverTimestamp from "./fieldValues/serverTimestamp";
+import firestore from './$firestore';
+import { transformDocumentRef, transformDocumentSnapshot } from './transformers';
+import { mapValues } from './utils';
+import serverTimestamp from './fieldValues/serverTimestamp';
 
 const prepareToBeUpdatedData = data => {
   const d = { ...data };
 
-  if (settings.autoTimestamps) {
-    d.$updated = serverTimestamp();
-  }
+  d.$updated = serverTimestamp();
 
   return d;
 };
@@ -23,7 +17,7 @@ export default class FiresDocument {
       ...data,
       $ref,
       $id: $ref.id,
-      $metadata
+      $metadata,
     });
   }
 
@@ -57,7 +51,7 @@ export default class FiresDocument {
       $ref: this.$ref,
       options: {},
       onNext,
-      onError
+      onError,
     });
   }
 
@@ -66,7 +60,7 @@ export default class FiresDocument {
       $ref: this.$ref,
       options: { includeMetadataChanges: true },
       onNext,
-      onError
+      onError,
     });
   }
 
@@ -81,7 +75,7 @@ export default class FiresDocument {
       err => {
         if (!onError) throw err;
         onError(err);
-      }
+      },
     );
   }
 }
@@ -95,10 +89,10 @@ const _setReadOnly = (obj, props) => {
       },
 
       set() {
-        throw Error("Attempt to mutate variable");
+        throw Error('Attempt to mutate variable');
       },
 
-      enumerable: true
-    }))
+      enumerable: true,
+    })),
   );
 };

@@ -16,8 +16,7 @@ describe('transformDocumentData', () => {
       cheat: 'how do you turn this on',
     };
 
-    expect(await transformDocumentData($mockDocData))
-      .toEqual($mockDocData);
+    expect(await transformDocumentData($mockDocData)).toEqual($mockDocData);
   });
 
   it('should not alter nested objects', async () => {
@@ -42,8 +41,7 @@ describe('transformDocumentData', () => {
       cheat: 'how do you turn this on',
     };
 
-    expect(await transformDocumentData($mockDocData))
-      .toEqual($mockDocData);
+    expect(await transformDocumentData($mockDocData)).toEqual($mockDocData);
   });
 
   it('should not alter normal objects', async () => {
@@ -54,8 +52,7 @@ describe('transformDocumentData', () => {
       cheat: 'how do you turn this on',
     };
 
-    expect(await transformDocumentData($mockDocData))
-      .toEqual($mockDocData);
+    expect(await transformDocumentData($mockDocData)).toEqual($mockDocData);
   });
 
   it('should be expend DocumentReference', async () => {
@@ -67,10 +64,12 @@ describe('transformDocumentData', () => {
         yo: 'hihi',
       });
 
-    expect(await transformDocumentData({
-      a: $mockDocRef,
-      hello: 'world !!!',
-    })).toEqual({
+    expect(
+      await transformDocumentData({
+        a: $mockDocRef,
+        hello: 'world !!!',
+      }),
+    ).toEqual({
       a: {
         yo: 'hihi',
       },
@@ -82,9 +81,11 @@ describe('transformDocumentData', () => {
     const $mockTimestamp = new firestore.Timestamp();
     $mockTimestamp.toDate.mockReturnValue('Date');
 
-    expect(await transformDocumentData({
-      created: $mockTimestamp,
-    })).toEqual({
+    expect(
+      await transformDocumentData({
+        created: $mockTimestamp,
+      }),
+    ).toEqual({
       created: 'Date',
     });
   });
@@ -101,26 +102,12 @@ describe('transformDocumentData', () => {
         yo: 'hihi',
       });
 
-    expect(await transformDocumentData({
-      mixed: [
-        0,
-        'string',
-        true,
-        '',
-        $mockTimestamp,
-        $mockDocRef,
-        { a: 3 },
-      ],
-    })).toEqual({
-      mixed: [
-        0,
-        'string',
-        true,
-        '',
-        'Date',
-        { yo: 'hihi' },
-        { a: 3 },
-      ],
+    expect(
+      await transformDocumentData({
+        mixed: [0, 'string', true, '', $mockTimestamp, $mockDocRef, { a: 3 }],
+      }),
+    ).toEqual({
+      mixed: [0, 'string', true, '', 'Date', { yo: 'hihi' }, { a: 3 }],
     });
   });
 });

@@ -22,22 +22,18 @@ describe('transformDocumentSnapshot', () => {
       .mockResolvedValue('documentData');
 
     FiresDocument.mockImplementation(({ $ref, data, $metadata }) => {
-      if ($ref, '$documentRef'
-        && data === 'documentData'
-        && $metadata === '$metadata') {
+      if (($ref, '$documentRef' && data === 'documentData' && $metadata === '$metadata')) {
         return { type: 'document' };
       }
       return {};
     });
 
-    expect(await transformDocumentSnapshot($mockDocSnapshot))
-      .toEqual({ type: 'document' });
+    expect(await transformDocumentSnapshot($mockDocSnapshot)).toEqual({ type: 'document' });
   });
 
   it('should return null if the $docSnapshot does not exists', async () => {
     const $mockDocSnapshot = { exists: false };
 
-    expect(await transformDocumentSnapshot($mockDocSnapshot))
-      .toEqual(null);
+    expect(await transformDocumentSnapshot($mockDocSnapshot)).toEqual(null);
   });
 });

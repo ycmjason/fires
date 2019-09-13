@@ -14,14 +14,8 @@ const $db = firestore();
 
 const clearCollection = async $collection => {
   await Promise.all(
-    (await $collection.get()).docs
-      .map(({ ref }) => ref)
-      .map(async ref => await ref.delete())
+    (await $collection.get()).docs.map(({ ref }) => ref).map(async ref => await ref.delete()),
   );
 };
 
-export {
-  firestore,
-  $db,
-  clearCollection,
-};
+export { firestore, $db, clearCollection };

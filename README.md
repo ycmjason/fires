@@ -70,11 +70,7 @@ import fires from 'fires';
 firebase.initializeApp({
   apiKey: '### FIREBASE API KEY ###',
   authDomain: '### FIREBASE AUTH DOMAIN ###',
-  projectId: '### CLOUD FIRESTORE PROJECT ID ###'
-});
-
-fires.settings({
-  autoTimestamps: true // this will insert `$created` and `$updated` to each document
+  projectId: '### CLOUD FIRESTORE PROJECT ID ###',
 });
 
 const db = fires();
@@ -101,41 +97,37 @@ peter = await peter.update({ age: 40 });
 await peter.delete();
 
 // Subscribe
-people.subscribe(ppl => {
-  // ppl: [ { $id: "...", name: "Mary", age: 10, $created: Date, $updated: Date }, ... ]
-}, err => {
-  // ...
-});
+people.subscribe(
+  ppl => {
+    // ppl: [ { $id: "...", name: "Mary", age: 10, $created: Date, $updated: Date }, ... ]
+  },
+  err => {
+    // ...
+  },
+);
 
-people.subscribe({
-  age: ['<', 18],
-}, children => {
-  // children: [ { $id: "...", name: "Mary", age: 10, $created: Date, $updated: Date }, ... ]
-}, err => {
-  // ...
-});
+people.subscribe(
+  {
+    age: ['<', 18],
+  },
+  children => {
+    // children: [ { $id: "...", name: "Mary", age: 10, $created: Date, $updated: Date }, ... ]
+  },
+  err => {
+    // ...
+  },
+);
 ```
 
 ## API Documentation
 
 The **3 and only 3** classes in Fires.
+
 1. `Fires`
 2. `FiresCollection`
 3. `FiresDocument`
 
 ### 1. Fires
-
-#### fires.settings(options)
-This static method changes the behavior of fires. Currently there is only one option namely, `autoTimestamps`, which will insert `$created` and `$updated` automatically to each document.
-
-Example:
-
-```js
-import fires from 'fires';
-fires.settings({
-  autoTimestamps: true, // default to false
-});
-```
 
 #### fires(): Fires
 
@@ -153,7 +145,7 @@ import fires from '@ycm.jason/fires';
 firebase.initializeApp({
   apiKey: '### FIREBASE API KEY ###',
   authDomain: '### FIREBASE AUTH DOMAIN ###',
-  projectId: '### CLOUD FIRESTORE PROJECT ID ###'
+  projectId: '### CLOUD FIRESTORE PROJECT ID ###',
 });
 
 const db = fires();
@@ -250,7 +242,7 @@ const countries = await countriesCollection.findAll();
 
 #### collection.find(queryObj: Object): Promise\<[FiresDocument]\>
 
-This method returns a `Promise` that resolves to all documents in the `collection` with each document meeting the criteria specified by the `queryObj`. 
+This method returns a `Promise` that resolves to all documents in the `collection` with each document meeting the criteria specified by the `queryObj`.
 
 Example:
 
@@ -261,7 +253,8 @@ const specialUsers = await users.find({
   country: 'us', // equivilant to ['==', 'us']
   age: ['range[)', 21, 30], // denotes 21 <= age < 30
   friends: ['array-contains', firesDocument],
-  thirdParty: { // nested query is supported, you can also speify 'thirdParty.facebook' if you wish
+  thirdParty: {
+    // nested query is supported, you can also speify 'thirdParty.facebook' if you wish
     facebook: true, // equivilant to ['==', true]
   },
 });
@@ -269,7 +262,7 @@ const specialUsers = await users.find({
 
 Each entry in the `queryObj` contains a key and value pair of `field` and `query`.
 
-Multiple entries are implemented as compound queries; they are combined with logical `AND`.  E.g. `await collection.find({ a: 3, b: 7})` will return all documents with `doc.a == 3 && doc.b == 7`.
+Multiple entries are implemented as compound queries; they are combined with logical `AND`. E.g. `await collection.find({ a: 3, b: 7})` will return all documents with `doc.a == 3 && doc.b == 7`.
 
 There are 3 types of queries:
 
@@ -280,6 +273,7 @@ There are 3 types of queries:
 All operators supported in [firestore query](https://firebase.google.com/docs/firestore/query-data/queries) are also supported, i.e. `<`, `<=`, `==`, `>`, `>=`, `array-contains`. An additional operator `!=` can also be used which means "not equals".
 
 In addition to the firestore operators, fires also support a set of "range" operators:
+
 - `range[]` - inclusive range, e.g. `{ age: ['range[]', 20, 50] }` denotes `20 <= age <= 50`
 - `range()` - exclusive range, e.g. `{state: ['range()', 'CA', 'IN'] }` denotes `'CA' < state < 'IN'`
 - `range[)` - inclusive start; exclusive end, e.g. `{ year: ['range[)', 1995, 2018] }` denotes `1995 <= year < 2018`
@@ -287,10 +281,10 @@ In addition to the firestore operators, fires also support a set of "range" oper
 
 All rules and limitations applies to firestore query also applies here:
 
--  `!=` is implemented with both `<` and `>`. E.g. `a != 3` is expanded into `a < 3 && a > 3`.
+- `!=` is implemented with both `<` and `>`. E.g. `a != 3` is expanded into `a < 3 && a > 3`.
 - To combine the equality operator (`==`) with `<`, `<=`, `>`, `>=`, `!=`, `range` or `array_contains`, make sure to create a [composite index](https://firebase.google.com/docs/firestore/query-data/indexing).
 - You can only perform range comparisons (`<`, `<=`, `>`, `>=`, `!=`, `range`) on a single field, and you can include at most one `array_contains` clause in a compound query.
--  Logical  `OR`  queries is not supported. In this case, you should do `collection.find` for each  `OR`  condition and merge the query results in your app.
+- Logical `OR` queries is not supported. In this case, you should do `collection.find` for each `OR` condition and merge the query results in your app.
 
 #### collection.subscribe(?queryObj: Object, onNext: function, ?onError: function): function
 
@@ -368,15 +362,15 @@ Example:
 const db = fires();
 const animals = db.collection('animals');
 const lion = await cars.findById('lion');
-await lion.subscribe(
-  nextLion => {
-    // nextLion: FiresDocument
-  },
-);
+await lion.subscribe(nextLion => {
+  // nextLion: FiresDocument
+});
 ```
+
 #### doc.subscribeIncludingMetadata(onNext: function, onError: function): function
 
 This method works the same as `doc.subscribe` except they also subscribes to metadata changes. This essentially set `includeMetadataChanges` to `true`. See [here](https://firebase.google.com/docs/reference/js/firebase.firestore.SnapshotListenOptions) for more information.
 
 ## Author
+
 Jason Yu<Paste>

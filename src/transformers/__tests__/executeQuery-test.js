@@ -16,7 +16,6 @@ describe('executeQuery', () => {
       .calledWith($mockQuerySnapshot)
       .mockResolvedValue(['doc1', 'doc2']);
 
-    expect(await executeQuery($mockQuery))
-      .toEqual(['doc1', 'doc2']);
+    expect(await executeQuery($mockQuery)).toEqual(['doc1', 'doc2']);
   });
 });

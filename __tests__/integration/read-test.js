@@ -1,7 +1,8 @@
 import { $db, clearCollection } from '../helpers/firebase.js';
 import fires, {
   // eslint-disable-next-line no-unused-vars
-  Fires, FiresCollection, FiresDocument
+  Fires,
+  FiresDocument,
 } from '../..';
 
 const COLLECTION_NAME = 'integration-read';
@@ -68,11 +69,13 @@ describe('Integration - Read', () => {
 
       expect(docs).toBeInstanceOf(Array);
       expect(docs).toHaveLength(3);
-      expect(docs).toEqual(expect.arrayContaining([
-        expect.objectContaining({ count: 100 }),
-        expect.objectContaining({ hello: 'world' }),
-        expect.objectContaining({ yo: false }),
-      ]));
+      expect(docs).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ count: 100 }),
+          expect.objectContaining({ hello: 'world' }),
+          expect.objectContaining({ yo: false }),
+        ]),
+      );
     });
   });
 
@@ -92,10 +95,12 @@ describe('Integration - Read', () => {
 
       expect(docs).toBeInstanceOf(Array);
       expect(docs).toHaveLength(2);
-      expect(docs).toEqual(expect.arrayContaining([
-        expect.objectContaining({ count: 60 }),
-        expect.objectContaining({ count: 100 }),
-      ]));
+      expect(docs).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ count: 60 }),
+          expect.objectContaining({ count: 100 }),
+        ]),
+      );
     });
 
     it('should retrieve document with matching nested query', async () => {
@@ -116,11 +121,13 @@ describe('Integration - Read', () => {
 
       expect(docs).toBeInstanceOf(Array);
       expect(docs).toHaveLength(3);
-      expect(docs).toEqual(expect.arrayContaining([
-        expect.objectContaining(createDoc(60)),
-        expect.objectContaining(createDoc(80)),
-        expect.objectContaining(createDoc(100)),
-      ]));
+      expect(docs).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(createDoc(60)),
+          expect.objectContaining(createDoc(80)),
+          expect.objectContaining(createDoc(100)),
+        ]),
+      );
     });
 
     // testing range operators
@@ -150,7 +157,7 @@ describe('Integration - Read', () => {
         await Promise.all(
           initialCounts.map(async count => {
             await $collection.add({ count });
-          })
+          }),
         );
         await $collection.add({ say: 'what' });
 
@@ -160,9 +167,9 @@ describe('Integration - Read', () => {
 
         expect(docs).toBeInstanceOf(Array);
         expect(docs).toHaveLength(expectedCounts.length);
-        expect(docs).toEqual(expect.arrayContaining(
-          expectedCounts.map(count => expect.objectContaining({ count })),
-        ));
+        expect(docs).toEqual(
+          expect.arrayContaining(expectedCounts.map(count => expect.objectContaining({ count }))),
+        );
       });
     });
   });

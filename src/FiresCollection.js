@@ -1,15 +1,12 @@
-import FiresDocument from "./FiresDocument";
-import { executeQuery, transformQuerySnapshot } from "./transformers";
-import settings from "./settings";
-import serverTimestamp from "./fieldValues/serverTimestamp";
+import FiresDocument from './FiresDocument';
+import { executeQuery, transformQuerySnapshot } from './transformers';
+import serverTimestamp from './fieldValues/serverTimestamp';
 
 const prepareToBeInsertedDocument = doc => {
   const d = { ...doc };
 
-  if (settings.autoTimestamps) {
-    d.$created = serverTimestamp();
-    d.$updated = serverTimestamp();
-  }
+  d.$created = serverTimestamp();
+  d.$updated = serverTimestamp();
 
   return d;
 };
@@ -21,9 +18,7 @@ export default class FiresCollection {
 
   // CREATE
   async create(doc) {
-    const $docRef = await this.$collection.add(
-      prepareToBeInsertedDocument(doc)
-    );
+    const $docRef = await this.$collection.add(prepareToBeInsertedDocument(doc));
     return await FiresDocument.from($docRef);
   }
 
@@ -31,7 +26,6 @@ export default class FiresCollection {
     const { $collection } = this;
     const $docRef = this.$collection.doc(id);
 
-    // check if exists
     const $docSnapshot = await $docRef.get();
     if ($docSnapshot.exists) {
       throw Error(`${$collection.id}.${id} already exists`);
@@ -71,7 +65,7 @@ export default class FiresCollection {
       $query,
       options: {},
       onNext,
-      onError
+      onError,
     });
   }
 
@@ -82,7 +76,7 @@ export default class FiresCollection {
       $query,
       options: { includeMetadataChanges: true },
       onNext,
-      onError
+      onError,
     });
   }
 
@@ -96,30 +90,30 @@ export default class FiresCollection {
       err => {
         if (!onError) throw err;
         onError(err);
-      }
+      },
     );
   }
 }
 
 const _parseSubscribeArgs = (queryObjOrOnNext, onNextOrOnError, onError) => {
-  if (typeof queryObjOrOnNext === "object") {
+  if (typeof queryObjOrOnNext === 'object') {
     return {
       queryObj: queryObjOrOnNext,
       onNext: onNextOrOnError,
-      onError
+      onError,
     };
   }
 
-  if (typeof queryObjOrOnNext === "function") {
+  if (typeof queryObjOrOnNext === 'function') {
     return {
       queryObj: undefined,
       onNext: queryObjOrOnNext,
-      onError: onNextOrOnError
+      onError: onNextOrOnError,
     };
   }
 
   throw Error(
-    "Unexpected error. Please check the arguments of subscribe or subscribeIncludingMetadata"
+    'Unexpected error. Please check the arguments of subscribe or subscribeIncludingMetadata',
   );
 };
 
@@ -133,32 +127,32 @@ const _where = ($query, queryObj) => {
 
 const _parseQueryObj = (queryObj = {}) => {
   const parseQueryEntry = (field, query) => {
-    if (["boolean", "string", "number"].includes(typeof query)) {
-      return [[field, "==", query]];
+    if (['boolean', 'string', 'number'].includes(typeof query)) {
+      return [[field, '==', query]];
     }
 
     if (Array.isArray(query)) {
       const operator = query[0];
-      if (["<", "<=", "==", ">", ">=", "array-contains"].includes(operator)) {
+      if (['<', '<=', '==', '>', '>=', 'array-contains'].includes(operator)) {
         const [operator, value] = query;
         return [[field, operator, value]];
-      } else if (operator === "!=") {
+      } else if (operator === '!=') {
         const value = query[1];
-        return [[field, "<", value], [field, ">", value]];
+        return [[field, '<', value], [field, '>', value]];
       } else if (/^range[[(][)\]]$/.test(operator)) {
         const [operator, start, end] = query;
         const inclusiveStart = /^range\[/.test(operator);
         const inclusiveEnd = /\]$/.test(operator);
         return [
-          [field, inclusiveStart ? ">=" : ">", start],
-          [field, inclusiveEnd ? "<=" : "<", end]
+          [field, inclusiveStart ? '>=' : '>', start],
+          [field, inclusiveEnd ? '<=' : '<', end],
         ];
       }
 
       throw Error(`Unknown operator ${operator}.`);
     }
 
-    if (typeof query === "object") {
+    if (typeof query === 'object') {
       return _parseQueryObj(query).map(([subfield, operator, value]) => {
         return [`${field}.${subfield}`, operator, value];
       });

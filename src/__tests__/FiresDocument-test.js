@@ -1,169 +1,133 @@
-import { when } from "jest-when";
+import { when } from 'jest-when';
 
-import { FiresDocument } from "..";
+import { FiresDocument } from '..';
 
-jest.mock("../$firestore");
-import firestore from "../$firestore";
+jest.mock('../$firestore');
+import firestore from '../$firestore';
 
-jest.mock("../transformers/transformDocumentSnapshot");
-import transformDocumentSnapshot from "../transformers/transformDocumentSnapshot";
+jest.mock('../transformers/transformDocumentSnapshot');
+import transformDocumentSnapshot from '../transformers/transformDocumentSnapshot';
 
-jest.mock("../transformers/transformDocumentRef");
-import transformDocumentRef from "../transformers/transformDocumentRef";
+jest.mock('../transformers/transformDocumentRef');
+import transformDocumentRef from '../transformers/transformDocumentRef';
 
-jest.mock("../fieldValues/serverTimestamp");
-import serverTimestamp from "../fieldValues/serverTimestamp";
+jest.mock('../fieldValues/serverTimestamp');
+import serverTimestamp from '../fieldValues/serverTimestamp';
 
-import { set as setSettings, reset as resetSettings } from "../settings";
-
-describe("FiresDocument", () => {
-  describe("settings.autoTimestamps = true", () => {
-    beforeAll(() => {
-      setSettings({ autoTimestamps: true });
-    });
-
-    afterAll(() => {
-      resetSettings();
-    });
-
-    it("firesDocument.update(data)", async () => {
-      const $mockDocRef = new firestore.DocumentReference();
-
-      serverTimestamp.mockReturnValue("now");
-
-      when(transformDocumentRef)
-        .calledWith($mockDocRef)
-        .mockResolvedValue("updated doc");
-
-      const doc = new FiresDocument({
-        $ref: $mockDocRef,
-        $metadata: {},
-        data: { a: 3 }
-      });
-
-      const newDocument = await doc.update({ a: 4 });
-      expect(newDocument).toBe("updated doc");
-      expect($mockDocRef.update).toHaveBeenCalledWith({
-        a: 4,
-        $updated: "now"
-      });
-    });
-  });
-
-  describe("FiresCollection.from", () => {
-    it("FiresCollection.from($docRef)", async () => {
+describe('FiresDocument', () => {
+  describe('FiresCollection.from', () => {
+    it('FiresCollection.from($docRef)', async () => {
       const $mockDocRef = new firestore.DocumentReference();
 
       when(transformDocumentRef)
         .calledWith($mockDocRef)
-        .mockResolvedValue("document");
+        .mockResolvedValue('document');
 
-      expect(await FiresDocument.from($mockDocRef)).toBe("document");
+      expect(await FiresDocument.from($mockDocRef)).toBe('document');
     });
 
-    it("FiresCollection.from($docSnapshot)", async () => {
+    it('FiresCollection.from($docSnapshot)', async () => {
       const $mockDocSnapshot = new firestore.DocumentSnapshot();
 
       when(transformDocumentSnapshot)
         .calledWith($mockDocSnapshot)
-        .mockResolvedValue("document");
+        .mockResolvedValue('document');
 
-      expect(await FiresDocument.from($mockDocSnapshot)).toBe("document");
+      expect(await FiresDocument.from($mockDocSnapshot)).toBe('document');
     });
   });
 
-  it("firesDocument.update(data)", async () => {
+  it('firesDocument.update(data)', async () => {
     const $mockDocRef = new firestore.DocumentReference();
+
+    serverTimestamp.mockReturnValue('now');
 
     when(transformDocumentRef)
       .calledWith($mockDocRef)
-      .mockResolvedValue("updated doc");
+      .mockResolvedValue('updated doc');
 
     const doc = new FiresDocument({
       $ref: $mockDocRef,
       $metadata: {},
-      data: { a: 3 }
+      data: { a: 3 },
     });
 
     const newDocument = await doc.update({ a: 4 });
-    expect(newDocument).toBe("updated doc");
+    expect(newDocument).toBe('updated doc');
     expect($mockDocRef.update).toHaveBeenCalledWith({
-      a: 4
+      a: 4,
+      $updated: 'now',
     });
   });
 
-  it("firesDocument.delete()", async () => {
+  it('firesDocument.delete()', async () => {
     const $mockDocRef = new firestore.DocumentReference();
 
     const doc = new FiresDocument({
       $ref: $mockDocRef,
       $metadata: {},
-      data: { a: 3 }
+      data: { a: 3 },
     });
 
     await doc.delete();
     expect($mockDocRef.delete).toHaveBeenCalled();
   });
 
-  describe("firesDocument.subscribe", () => {
-    describe("firesDocument._subscribe(onNext, onError)", () => {
-      it("should call onNext", async done => {
+  describe('firesDocument.subscribe', () => {
+    describe('firesDocument._subscribe(onNext, onError)', () => {
+      it('should call onNext', async done => {
         const $mockDocRef = new firestore.DocumentReference();
 
-        $mockDocRef.onSnapshot.mockImplementation(
-          (options, onNext, onError) => {
-            onNext("$nextMockDocSnapshot");
-          }
-        );
+        $mockDocRef.onSnapshot.mockImplementation((options, onNext, onError) => {
+          onNext('$nextMockDocSnapshot');
+        });
 
         when(transformDocumentSnapshot)
-          .calledWith("$nextMockDocSnapshot")
-          .mockResolvedValue("document");
+          .calledWith('$nextMockDocSnapshot')
+          .mockResolvedValue('document');
 
         new FiresDocument({
           $ref: $mockDocRef,
           $metadata: {},
-          data: { a: 3 }
+          data: { a: 3 },
         })._subscribe({
           $ref: $mockDocRef,
           options: {},
           onNext: doc => {
-            expect(doc).toBe("document");
+            expect(doc).toBe('document');
             done();
-          }
+          },
         });
       });
 
-      it("should call onError", async done => {
+      it('should call onError', async done => {
         const $mockDocRef = new firestore.DocumentReference();
 
-        $mockDocRef.onSnapshot.mockImplementation(
-          (options, onNext, onError) => {
-            onError("error");
-          }
-        );
+        $mockDocRef.onSnapshot.mockImplementation((options, onNext, onError) => {
+          onError('error');
+        });
 
         new FiresDocument({
           $ref: $mockDocRef,
           $metadata: {},
-          data: { a: 3 }
+          data: { a: 3 },
         })._subscribe({
           $ref: $mockDocRef,
           options: {},
           onError: err => {
-            expect(err).toBe("error");
+            expect(err).toBe('error');
             done();
-          }
+          },
         });
       });
     });
 
-    it("firesDocument.subscribe(onNext, onError)", () => {
+    it('firesDocument.subscribe(onNext, onError)', () => {
       const $mockDocRef = new firestore.DocumentReference();
       const doc = new FiresDocument({
         $ref: $mockDocRef,
         $metadata: {},
-        data: { a: 3 }
+        data: { a: 3 },
       });
       doc._subscribe = jest.fn();
 
@@ -175,16 +139,16 @@ describe("FiresDocument", () => {
         $ref: $mockDocRef,
         options: {},
         onNext,
-        onError
+        onError,
       });
     });
 
-    it("firesDocument.subscribeIncludingMetadata(onNext, onError)", () => {
+    it('firesDocument.subscribeIncludingMetadata(onNext, onError)', () => {
       const $mockDocRef = new firestore.DocumentReference();
       const doc = new FiresDocument({
         $ref: $mockDocRef,
         $metadata: {},
-        data: { a: 3 }
+        data: { a: 3 },
       });
       doc._subscribe = jest.fn();
 
@@ -196,7 +160,7 @@ describe("FiresDocument", () => {
         $ref: $mockDocRef,
         options: { includeMetadataChanges: true },
         onNext,
-        onError
+        onError,
       });
     });
   });

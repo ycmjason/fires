@@ -1,6 +1,6 @@
-import firestore from "../$firestore";
-import { aMapValues } from "../utils";
-import transformDocumentRef from "./transformDocumentRef";
+import firestore from '../$firestore';
+import { aMapValues } from '../utils';
+import transformDocumentRef from './transformDocumentRef';
 
 const transformValue = async v => {
   if (v instanceof firestore.DocumentReference) {
@@ -15,7 +15,7 @@ const transformValue = async v => {
     return await Promise.all(v.map(transformValue));
   }
 
-  if (typeof v === "object") {
+  if (typeof v === 'object') {
     return await transformDocumentData(v);
   }
 

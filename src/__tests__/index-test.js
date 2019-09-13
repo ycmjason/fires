@@ -1,35 +1,35 @@
-import { when } from "jest-when";
+import { when } from 'jest-when';
 
-jest.mock("../$firestore");
-import firestore from "../$firestore";
+jest.mock('../$firestore');
+import firestore from '../$firestore';
 
-jest.mock("../Fires");
-import fires, { Fires } from "..";
+jest.mock('../Fires');
+import fires, { Fires } from '..';
 
-describe("fires (entry)", () => {
-  it("should return a FiresCollection", () => {
+describe('fires (entry)', () => {
+  it('should return a FiresCollection', () => {
     when(firestore)
       .calledWith()
-      .mockReturnValue("$mockFirestore");
+      .mockReturnValue('$mockFirestore');
 
     Fires.mockImplementation($collection => {
-      if ($collection === "$mockFirestore") {
-        return { type: "mockFires" };
+      if ($collection === '$mockFirestore') {
+        return { type: 'mockFires' };
       }
       return {};
     });
 
-    expect(fires()).toEqual({ type: "mockFires" });
+    expect(fires()).toEqual({ type: 'mockFires' });
   });
 
-  it("should return the same FiresCollection for subsequent calls", () => {
+  it('should return the same FiresCollection for subsequent calls', () => {
     when(firestore)
       .calledWith()
-      .mockReturnValue("$mockFirestore");
+      .mockReturnValue('$mockFirestore');
 
     Fires.mockImplementation($collection => {
-      if ($collection === "$mockFirestore") {
-        return { type: "mockFires" };
+      if ($collection === '$mockFirestore') {
+        return { type: 'mockFires' };
       }
       return {};
     });

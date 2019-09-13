@@ -13,7 +13,6 @@ describe('transformDocumentRef', () => {
       .calledWith('$documentSnapshot')
       .mockResolvedValue('document');
 
-    expect(await transformDocumentRef($mockDocRef))
-      .toEqual('document');
+    expect(await transformDocumentRef($mockDocRef)).toEqual('document');
   });
 });

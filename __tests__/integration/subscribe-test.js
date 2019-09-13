@@ -1,7 +1,8 @@
 import { $db, clearCollection } from '../helpers/firebase.js';
 import fires, {
   // eslint-disable-next-line no-unused-vars
-  Fires, FiresCollection, FiresDocument
+  Fires,
+  FiresDocument,
 } from '../..';
 
 const createStreamCB = () => {
@@ -15,7 +16,7 @@ const createStreamCB = () => {
     return fn(...args);
   };
 
-  cb.next = (fn) => {
+  cb.next = fn => {
     fns.push(fn);
     return cb;
   };
@@ -74,8 +75,8 @@ describe('Integration - Subscribe', () => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(0);
               done();
-            })
-        )
+            }),
+        ),
       );
     });
 
@@ -112,8 +113,8 @@ describe('Integration - Subscribe', () => {
               expect(docs).toBeInstanceOf(Array);
               expect(docs).toHaveLength(0);
               done();
-            })
-        )
+            }),
+        ),
       );
     });
   });
@@ -139,8 +140,8 @@ describe('Integration - Subscribe', () => {
             .next(async doc => {
               expect(doc).toBeNull();
               done();
-            })
-        )
+            }),
+        ),
       );
     });
   });

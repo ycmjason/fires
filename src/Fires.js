@@ -1,8 +1,8 @@
-import FiresCollection from "./FiresCollection";
+import FiresCollection from './FiresCollection';
 
 const _checkFirestoreConfig = $firestore => {
-  if (!$firestore._config.settings.timestampsInSnapshots) {
-    throw Error("Fires: Firestore must set `timestampsInSnapshots` to `true`.");
+  if (!$firestore._settings.timestampsInSnapshots) {
+    throw Error('Fires: Firestore must set `timestampsInSnapshots` to `true`.');
   }
 
   return;
