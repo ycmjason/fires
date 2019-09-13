@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.5.0
+- bump dependencies
+- since timestampeInSnapshots is by default true now, assume more usage
+  of it.
+
 ## 0.4.0
 - bump firebase to 6.0
 
